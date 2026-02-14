@@ -2,11 +2,11 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "Call center API – Express, Drizzle, PostgreSQL",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "node dist/src/index.js",
     "db:generate": "node -r dotenv/config ./node_modules/drizzle-kit/bin.cjs generate",
     "db:migrate": "node -r dotenv/config ./node_modules/drizzle-kit/bin.cjs migrate",
     "db:push": "node -r dotenv/config ./node_modules/drizzle-kit/bin.cjs push",
