@@ -2,6 +2,11 @@
   "common": {
     "appTitle": "Tickets panel",
     "language": "Language",
+    "theme": {
+      "light": "Light",
+      "dark": "Dark",
+      "aria": "Theme: light or dark"
+    },
     "pagination": {
       "prev": "Previous",
       "next": "Next",

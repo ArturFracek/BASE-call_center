@@ -2,6 +2,11 @@
   "common": {
     "appTitle": "Panel zgłoszeń",
     "language": "Język",
+    "theme": {
+      "light": "Jasny",
+      "dark": "Ciemny",
+      "aria": "Motyw: jasny lub ciemny"
+    },
     "pagination": {
       "prev": "Poprzednia",
       "next": "Następna",

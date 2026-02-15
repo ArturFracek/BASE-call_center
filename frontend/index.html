@@ -6,6 +6,17 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Call Center</title>
+  <script>
+    (function () {
+      var key = 'app-theme';
+      var stored = localStorage.getItem(key);
+      var root = document.documentElement;
+      if (stored === 'dark') root.classList.add('dark');
+      else if (stored === 'light') root.classList.remove('dark');
+      else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) root.classList.add('dark');
+      else root.classList.remove('dark');
+    })();
+  </script>
 </head>
 
 <body>
