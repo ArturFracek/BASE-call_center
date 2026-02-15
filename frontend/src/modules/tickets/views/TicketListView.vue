@@ -24,6 +24,7 @@
       <template v-else>
         <DataTable
           v-if="!isMobile"
+          ref="dataTableRef"
           :opts="tableOpts"
           @select="(row) => goToDetail(row as ITicket)"
           @sort="handleSort"
@@ -41,11 +42,29 @@
           v-else
           class="ticket-list-view__cards"
         >
-          <TicketCard
-            v-for="ticket in tickets"
-            :key="ticket.id"
-            :ticket="ticket"
-          />
+          <RecycleScroller
+            v-slot="{ item }"
+            class="ticket-list-view__scroller"
+            :style="{ height: virtualScroller.scrollerHeight + 'px' }"
+            :items="tickets"
+            :item-size="virtualScroller.itemSize"
+            :key-field="virtualScroller.keyField"
+            :buffer="virtualScroller.buffer"
+          >
+            <div
+              class="ticket-list-view__scroller-item"
+              :style="{ height: virtualScroller.itemSize + 'px' }"
+            >
+              <TicketCard :ticket="item" />
+            </div>
+          </RecycleScroller>
+          <p
+            v-if="store.loading"
+            class="ticket-list-view__loader"
+            aria-live="polite"
+          >
+            {{ $t("tickets.messages.loading") }}
+          </p>
         </div>
       </template>
     </template>
@@ -53,9 +72,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { nextTick, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import FilterBar from "@/modules/tickets/components/shared/FilterBar.vue";
 import PriorityBadge from "@/modules/tickets/components/shared/PriorityBadge.vue";
 import StatusBadge from "@/modules/tickets/components/shared/StatusBadge.vue";
@@ -71,6 +90,7 @@ import {
   type DataTableSortPayload,
 } from "@/shared/components/data-table";
 import { useIsMobile } from "@/composables/useIsMobile";
+import { useVirtualScroller } from "@/shared/composables/useVirtualScroller";
 
 const store = useTicketsStore();
 const { t } = useI18n();
@@ -84,6 +104,9 @@ const {
 } = useTicketsFilter();
 const { isMobile } = useIsMobile();
 const router = useRouter();
+const virtualScroller = useVirtualScroller({
+  visibleCount: 5,
+});
 
 const sortField = ref<string | null>(null);
 const sortOrder = ref<DataTableSortPayload["order"]>(SORT_ORDER.ASC);
@@ -142,6 +165,24 @@ const goToDetail = (ticket: ITicket): void => {
     display: flex
     flex-direction: column
     gap: 0.75rem
+
+  &__scroller
+    width: 100%
+
+  &__scroller-item
+    display: flex
+    flex-direction: column
+    padding-bottom: 0.5rem
+    box-sizing: border-box
+    flex-shrink: 0
+    overflow: hidden
+
+  &__loader
+    color: var(--muted-foreground)
+    font-size: 0.875rem
+    text-align: center
+    padding: 0.5rem 0
+    margin: 0
 
 @media (max-width: 768px)
   .ticket-list-view
