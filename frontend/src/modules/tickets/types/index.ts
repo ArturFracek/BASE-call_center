@@ -3,17 +3,24 @@ import {
   TICKET_STATUSES,
 } from "@/modules/tickets/consts";
 
-export type TicketStatus = (typeof TICKET_STATUSES)[number];
-export type TicketPriority = (typeof TICKET_PRIORITIES)[number];
+export type TTicketStatus = (typeof TICKET_STATUSES)[number];
+export type TTicketPriority = (typeof TICKET_PRIORITIES)[number];
 
-export type StatusFilter = "all" | TicketStatus;
+export type TStatusFilter = "all" | TTicketStatus;
 
-export interface Ticket {
+export interface ITicket {
   id: number;
   customerName: string;
   subject: string;
   description: string;
-  priority: TicketPriority;
-  status: TicketStatus;
+  priority: TTicketPriority;
+  status: TTicketStatus;
   createdAt: string;
+}
+
+export interface TFindAllTicketsParams {
+  status?: TTicketStatus;
+  limit?: number;
+  offset?: number;
+  search?: string;
 }

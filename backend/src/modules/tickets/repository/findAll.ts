@@ -1,11 +1,11 @@
 import { and, desc, eq, ilike, or } from "drizzle-orm";
 import { db } from "../../../db/index.js";
 import { tickets } from "../dbSchema/dbTicketsSchema.js";
-import type { Ticket, FindAllTicketsParams } from "../types/index.js";
+import type { TTicket, TFindAllTicketsParams } from "../types/index.js";
 
 export async function findAll(
-  params: FindAllTicketsParams
-): Promise<Ticket[]> {
+  params: TFindAllTicketsParams
+): Promise<TTicket[]> {
   const { status, limit, offset, search } = params;
 
   const conditions = [];

@@ -1,0 +1,19 @@
+import { displayToast } from "@/composables/useToast";
+import {
+  ticketRepository,
+  type FindAllResponse,
+} from "@/modules/tickets/repositories";
+import type { TFindAllTicketsParams } from "@/modules/tickets/types";
+import { getErrorMessage } from "@/shared/helpers/getErrorMessage";
+
+export async function findAll(
+  params?: TFindAllTicketsParams
+): Promise<FindAllResponse> {
+  try {
+    const { data } = await ticketRepository.findAll(params);
+    return data;
+  } catch (err) {
+    displayToast("error", getErrorMessage(err, "tickets.messages.fetchError"));
+    throw err;
+  }
+}

@@ -6,4 +6,4 @@ export const patchTicketBodySchema = z.object({
   status: z.enum(ticketStatusValues),
 });
 
-export type PatchTicketBody = z.infer<typeof patchTicketBodySchema>;
+export type TPatchTicketBody = z.infer<typeof patchTicketBodySchema>;

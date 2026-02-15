@@ -1,9 +1,9 @@
 import { ValidationError } from "../../../errors/index.js";
 import { findAll } from "../repository/index.js";
-import type { Ticket } from "../types/index.js";
+import type { TTicket } from "../types/index.js";
 import { getTicketsQuerySchema } from "../validation/getTicketsQuerySchema.js";
 
-export async function getTickets(query: unknown): Promise<Ticket[]> {
+export async function getTickets(query: unknown): Promise<TTicket[]> {
   const parsed = getTicketsQuerySchema.safeParse(query);
   if (!parsed.success) {
     throw new ValidationError("Invalid query", parsed.error);

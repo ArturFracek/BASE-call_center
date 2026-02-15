@@ -1,0 +1,45 @@
+{
+  "common": {
+    "appTitle": "Panel zgłoszeń",
+    "language": "Język"
+  },
+  "tickets": {
+    "status": {
+      "new": "Nowe",
+      "in_progress": "W trakcie",
+      "closed": "Zamknięte"
+    },
+    "priority": {
+      "low": "Niski",
+      "medium": "Średni",
+      "high": "Wysoki"
+    },
+    "filter": {
+      "all": "Wszystkie",
+      "new": "Nowe",
+      "in_progress": "W trakcie",
+      "closed": "Zamknięte"
+    },
+    "headers": {
+      "list": "Lista zgłoszeń",
+      "detail": "Szczegóły zgłoszenia",
+      "id": "ID",
+      "customerName": "Imię i nazwisko",
+      "subject": "Temat",
+      "status": "Status",
+      "priority": "Priorytet",
+      "createdAt": "Data utworzenia",
+      "description": "Opis"
+    },
+    "buttons": {
+      "save": "Zapisz",
+      "backToList": "Powrót do listy"
+    },
+    "messages": {
+      "fetchError": "Nie udało się pobrać zgłoszeń",
+      "updateError": "Nie udało się zaktualizować statusu",
+      "loading": "Ładowanie…",
+      "emptyList": "Brak zgłoszeń."
+    }
+  }
+}

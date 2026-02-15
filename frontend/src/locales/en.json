@@ -1,0 +1,45 @@
+{
+  "common": {
+    "appTitle": "Tickets panel",
+    "language": "Language"
+  },
+  "tickets": {
+    "status": {
+      "new": "New",
+      "in_progress": "In progress",
+      "closed": "Closed"
+    },
+    "priority": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
+    "filter": {
+      "all": "All",
+      "new": "New",
+      "in_progress": "In progress",
+      "closed": "Closed"
+    },
+    "headers": {
+      "list": "Ticket list",
+      "detail": "Ticket details",
+      "id": "ID",
+      "customerName": "Customer name",
+      "subject": "Subject",
+      "status": "Status",
+      "priority": "Priority",
+      "createdAt": "Created at",
+      "description": "Description"
+    },
+    "buttons": {
+      "save": "Save",
+      "backToList": "Back to list"
+    },
+    "messages": {
+      "fetchError": "Failed to fetch tickets",
+      "updateError": "Failed to update status",
+      "loading": "Loading…",
+      "emptyList": "No tickets."
+    }
+  }
+}

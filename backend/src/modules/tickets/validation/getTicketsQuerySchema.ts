@@ -12,4 +12,4 @@ export const getTicketsQuerySchema = z.object({
   search: z.string().optional(),
 });
 
-export type GetTicketsQuery = z.infer<typeof getTicketsQuerySchema>;
+export type TGetTicketsQuery = z.infer<typeof getTicketsQuerySchema>;

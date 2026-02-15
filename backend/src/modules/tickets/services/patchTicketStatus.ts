@@ -1,13 +1,13 @@
 import { NotFoundError, ValidationError } from "../../../errors/index.js";
 import { parseTicketId } from "../helpers/parseTicketId.js";
 import { updateStatus } from "../repository/index.js";
-import type { Ticket } from "../types/index.js";
+import type { TTicket } from "../types/index.js";
 import { patchTicketBodySchema } from "../validation/patchTicketSchema.js";
 
 export async function patchTicketStatus(
   idParam: string | string[] | undefined,
   body: unknown
-): Promise<Ticket> {
+): Promise<TTicket> {
   const id = parseTicketId(idParam);
   const parsed = patchTicketBodySchema.safeParse(body);
   if (!parsed.success) {

@@ -1,12 +1,12 @@
 import { eq } from "drizzle-orm";
 import { db } from "../../../db/index.js";
 import { tickets } from "../dbSchema/dbTicketsSchema.js";
-import type { Ticket, TicketStatus } from "../types/index.js";
+import type { TTicket, TTicketStatus } from "../types/index.js";
 
 export async function updateStatus(
   id: number,
-  status: TicketStatus
-): Promise<Ticket | null> {
+  status: TTicketStatus
+): Promise<TTicket | null> {
   const rows = await db
     .update(tickets)
     .set({ status })
