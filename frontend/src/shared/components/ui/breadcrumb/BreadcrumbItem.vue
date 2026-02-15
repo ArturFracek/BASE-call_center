@@ -1,19 +1,17 @@
 <template>
-  <div
-    data-slot="card-content"
-    :class="cn('px-6', props.class)"
+  <li
+    data-slot="breadcrumb-item"
+    :class="cn('inline-flex items-center gap-1.5', props.class)"
   >
     <slot />
-  </div>
+  </li>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { HTMLAttributes } from "vue"
 import { cn } from '@/shared/helpers/classNames'
 
-interface Props {
+const props = defineProps<{
   class?: HTMLAttributes["class"]
-}
-
-const props = defineProps<Props>()
+}>()
 </script>
