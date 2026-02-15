@@ -1,7 +1,9 @@
 import app from "./app.js";
+import { DEFAULT_PORT, ENV_KEYS } from "../constants.js";
+import logger from "../helpers/logger.js";
 
-const PORT = parseInt(process.env.PORT || "3000", 10);
+const PORT = parseInt(process.env[ENV_KEYS.PORT] || String(DEFAULT_PORT), 10);
 
 app.listen(PORT, () => {
-  console.log(`Server listening on http://localhost:${PORT}`);
+  logger.info(`Server listening on http://localhost:${PORT}`);
 });

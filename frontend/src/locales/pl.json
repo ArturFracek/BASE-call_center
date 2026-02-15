@@ -23,6 +23,7 @@
       "prevPage": "Poprzednia strona",
       "nextPage": "Następna strona",
       "pageNumber": "Strona {page}",
+      "scrollToTop": "Przewiń na początek",
       "close": "Zamknij",
       "notifications": "Powiadomienia"
     }

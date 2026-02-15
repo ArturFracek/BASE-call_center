@@ -2,9 +2,9 @@
   <Select v-model="model">
     <SelectTrigger
       class="w-[180px]"
-      :aria-label="$t('tickets.filter.' + STATUS_FILTER_OPTIONS.ALL)"
+      :aria-label="t('tickets.filter.' + STATUS_FILTER_OPTIONS.ALL)"
     >
-      <SelectValue :placeholder="$t('tickets.filter.' + STATUS_FILTER_OPTIONS.ALL)" />
+      <SelectValue :placeholder="t('tickets.filter.' + STATUS_FILTER_OPTIONS.ALL)" />
     </SelectTrigger>
     <SelectContent>
       <TransitionGroup
@@ -17,7 +17,7 @@
           :key="opt"
           :value="opt"
         >
-          {{ $t("tickets.filter." + opt) }}
+          {{ t("tickets.filter." + opt) }}
           <span
             v-if="countForOption(opt) !== null"
             class="text-muted-foreground"
@@ -30,6 +30,7 @@
 
 <script setup lang="ts">
 import { TransitionGroup } from "vue";
+import { useI18n } from "vue-i18n";
 import {
   Select,
   SelectContent,
@@ -43,6 +44,8 @@ import {
 } from "@/modules/tickets/consts";
 import { useTicketsStore } from "@/modules/tickets/stores/ticketsStore";
 import type { TStatusFilter } from "@/modules/tickets/types";
+
+const { t } = useI18n();
 
 const model = defineModel<TStatusFilter>({
   default: STATUS_FILTER_OPTIONS.ALL,

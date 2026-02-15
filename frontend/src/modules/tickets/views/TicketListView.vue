@@ -1,10 +1,7 @@
 <template>
   <main class="ticket-list-view">
     <header class="ticket-list-view__header">
-      <h1
-        v-once
-        class="ticket-list-view__title"
-      >
+      <h1 class="ticket-list-view__title">
         {{ t("tickets.headers.list") }}
       </h1>
       <FilterBar v-model="statusFilter" />
@@ -59,6 +56,7 @@
           >
             <RecycleScroller
               v-if="scrollerHeightPx > 0"
+              ref="recycleScrollerRef"
               v-slot="{ item: row }"
               class="ticket-list-view__scroller"
               :style="{ height: scrollerHeightPx + 'px' }"
@@ -81,6 +79,17 @@
               </div>
             </RecycleScroller>
           </div>
+          <Button
+            v-if="isMobile && tickets.length > 0"
+            type="button"
+            variant="secondary"
+            size="icon"
+            class="ticket-list-view__scroll-top"
+            :aria-label="t('common.aria.scrollToTop')"
+            @click="scrollToTop"
+          >
+            <ChevronUp class="size-5" />
+          </Button>
           <p
             v-if="store.loading"
             class="ticket-list-view__loader"
@@ -98,6 +107,7 @@
 import { computed, nextTick, onUnmounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
+import { ChevronUp } from "lucide-vue-next";
 import { Button } from "@/shared/components/ui/button";
 import FilterBar from "@/modules/tickets/components/shared/FilterBar.vue";
 import PriorityBadge from "@/modules/tickets/components/shared/PriorityBadge.vue";
@@ -137,12 +147,30 @@ const {
   pageSize,
   total,
 } = useTicketsFilter({ limitRef });
+
+// Przy przejściu na widok mobilny (limit 100) strona 3 daje offset 200 → pusta lista.
+// Reset do strony 1, żeby pobrać pierwsze 100 zgłoszeń i pokazać kafelki.
+watch(isMobile, (mobile) => {
+  if (mobile) setPage(1);
+});
+
 const router = useRouter();
 const route = useRoute();
 const { goToDetail } = useTicketNavigation();
 const dataTableRef = ref<InstanceType<typeof DataTable> | null>(null);
 const scrollerWrapRef = ref<HTMLElement | null>(null);
+const recycleScrollerRef = ref<{ $el?: HTMLElement } | null>(null);
 const scrollerHeightPx = ref(0);
+
+function scrollToTop(): void {
+  const fromRef =
+    (recycleScrollerRef.value as { $el?: HTMLElement } | null)?.$el ??
+    scrollerWrapRef.value?.firstElementChild;
+  const el = fromRef as HTMLElement | null | undefined;
+  if (el?.scrollTo) {
+    el.scrollTo({ top: 0, behavior: "smooth" });
+  }
+}
 
 const virtualScroller = useVirtualScroller({
   visibleCount: 4,
@@ -158,7 +186,7 @@ const ticketRows = computed(() => {
     const b = list[i + 1];
     const rowTickets: ITicket[] = b != null ? [a, b] : [a];
     rows.push({
-      id: rowTickets.length === 2 ? `row-${a.id}-${b.id}` : `row-${a.id}`,
+      id: rowTickets.length === 2 ? `row-${a.id}-${rowTickets[1].id}` : `row-${a.id}`,
       tickets: rowTickets,
     });
   }
@@ -318,6 +346,13 @@ watch(
   &__edit-btn
     flex-shrink: 0
 
+  &__scroll-top
+    position: fixed
+    right: 1rem
+    z-index: 50
+    border-radius: 50%
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15)
+
 @media (max-width: 768px)
   .ticket-list-view
     width: 100%
@@ -332,4 +367,6 @@ watch(
     width: 100%
   .ticket-list-view__scroller-wrap
     width: 100%
+  .ticket-list-view__scroll-top
+    top: 4.5rem
 </style>

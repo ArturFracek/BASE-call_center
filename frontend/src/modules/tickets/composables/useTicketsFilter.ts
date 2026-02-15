@@ -1,3 +1,4 @@
+import type { ComputedRef, Ref } from "vue";
 import { ref, computed, watch } from "vue";
 import {
   STATUS_FILTER_OPTIONS,
@@ -8,18 +9,27 @@ import type { ITicket, TStatusFilter } from "@/modules/tickets/types";
 
 const DEFAULT_FILTER = STATUS_FILTER_OPTIONS.ALL;
 
-export const useTicketsFilter = () => {
+export type UseTicketsFilterOptions = {
+  /** Gdy podany (np. limit dla widoku kart), używany zamiast TICKET_LIST_PAGE_SIZE. */
+  limitRef?: Ref<number> | ComputedRef<number>;
+};
+
+export const useTicketsFilter = (options?: UseTicketsFilterOptions) => {
   const store = useTicketsStore();
 
   const statusFilter = ref<TStatusFilter>(DEFAULT_FILTER);
   const page = ref(1);
 
+  const limit = computed(() =>
+    options?.limitRef ? options.limitRef.value : TICKET_LIST_PAGE_SIZE
+  );
+
   const setStatusFilter = (
     value: TStatusFilter,
-    options?: { resetPage?: boolean }
+    opts?: { resetPage?: boolean }
   ): void => {
     statusFilter.value = value;
-    if (options?.resetPage !== false) {
+    if (opts?.resetPage !== false) {
       page.value = 1;
     }
   };
@@ -29,7 +39,7 @@ export const useTicketsFilter = () => {
   };
 
   watch(
-    [statusFilter, page],
+    [statusFilter, page, limit],
     () => {
       const status =
         statusFilter.value === DEFAULT_FILTER
@@ -37,8 +47,8 @@ export const useTicketsFilter = () => {
           : statusFilter.value;
       store.fetchTickets({
         status,
-        limit: TICKET_LIST_PAGE_SIZE,
-        offset: (page.value - 1) * TICKET_LIST_PAGE_SIZE,
+        limit: limit.value,
+        offset: (page.value - 1) * limit.value,
       });
     },
     { immediate: true }
@@ -52,7 +62,7 @@ export const useTicketsFilter = () => {
     setStatusFilter,
     page,
     setPage,
-    pageSize: TICKET_LIST_PAGE_SIZE,
+    pageSize: limit,
     total,
     tickets,
   };

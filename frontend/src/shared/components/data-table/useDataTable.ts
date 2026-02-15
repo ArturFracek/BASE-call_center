@@ -1,10 +1,11 @@
-import { computed, type Ref } from "vue";
+import type { ComputedRef, Ref } from "vue";
+import { computed, unref } from "vue";
 import type { IDataTableColumnOpts, IDataTableOpts } from "./types";
 import type { TSortOrder } from "./constants";
 
 export interface IUseDataTablePagination {
   page: Ref<number>;
-  pageSize: number;
+  pageSize: number | Ref<number> | ComputedRef<number>;
   total: Ref<number>;
   getActiveFilterLabel?: () => string;
 }
@@ -38,7 +39,7 @@ export const useDataTable = <T>(deps: IUseDataTableDeps<T>) => {
     ) {
       base.pagination = {
         page: deps.pagination.page.value,
-        pageSize: deps.pagination.pageSize,
+        pageSize: unref(deps.pagination.pageSize),
         total: deps.pagination.total.value,
         activeFilterLabel: deps.pagination.getActiveFilterLabel?.(),
       };

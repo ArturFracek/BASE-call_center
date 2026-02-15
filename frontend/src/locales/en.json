@@ -23,6 +23,7 @@
       "prevPage": "Previous page",
       "nextPage": "Next page",
       "pageNumber": "Page {page}",
+      "scrollToTop": "Scroll to top",
       "close": "Close",
       "notifications": "Notifications"
     }
