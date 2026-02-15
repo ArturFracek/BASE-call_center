@@ -1,3 +1,12 @@
+<template>
+  <h3
+    data-slot="card-title"
+    :class="cn('leading-none font-semibold', props.class)"
+  >
+    <slot />
+  </h3>
+</template>
+
 <script setup lang="ts">
 import type { HTMLAttributes } from "vue"
 import { cn } from '@/shared/helpers/classNames'
@@ -8,12 +17,3 @@ interface Props {
 
 const props = defineProps<Props>()
 </script>
-
-<template>
-  <h3
-    data-slot="card-title"
-    :class="cn('leading-none font-semibold', props.class)"
-  >
-    <slot />
-  </h3>
-</template>

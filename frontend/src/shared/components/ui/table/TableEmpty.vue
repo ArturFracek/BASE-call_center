@@ -1,3 +1,21 @@
+<template>
+  <TableRow>
+    <TableCell
+      :class="
+        cn(
+          'p-4 whitespace-nowrap align-middle text-sm text-foreground',
+          props.class,
+        )
+      "
+      v-bind="delegatedProps"
+    >
+      <div class="flex items-center justify-center py-10">
+        <slot />
+      </div>
+    </TableCell>
+  </TableRow>
+</template>
+
 <script setup lang="ts">
 import type { HTMLAttributes } from "vue"
 import { reactiveOmit } from "@vueuse/core"
@@ -16,21 +34,3 @@ const props = withDefaults(defineProps<Props>(), {
 
 const delegatedProps = reactiveOmit(props, "class")
 </script>
-
-<template>
-  <TableRow>
-    <TableCell
-      :class="
-        cn(
-          'p-4 whitespace-nowrap align-middle text-sm text-foreground',
-          props.class,
-        )
-      "
-      v-bind="delegatedProps"
-    >
-      <div class="flex items-center justify-center py-10">
-        <slot />
-      </div>
-    </TableCell>
-  </TableRow>
-</template>

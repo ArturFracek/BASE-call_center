@@ -1,14 +1,3 @@
-<script setup lang="ts">
-import type { HTMLAttributes } from "vue"
-import { cn } from '@/shared/helpers/classNames'
-
-interface Props {
-  class?: HTMLAttributes["class"]
-}
-
-const props = defineProps<Props>()
-</script>
-
 <template>
   <td
     data-slot="table-cell"
@@ -22,3 +11,14 @@ const props = defineProps<Props>()
     <slot />
   </td>
 </template>
+
+<script setup lang="ts">
+import type { HTMLAttributes } from "vue"
+import { cn } from '@/shared/helpers/classNames'
+
+interface Props {
+  class?: HTMLAttributes["class"]
+}
+
+const props = defineProps<Props>()
+</script>
