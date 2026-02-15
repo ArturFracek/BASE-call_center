@@ -3,10 +3,9 @@ import { db } from "../../../db/index.js";
 import { tickets } from "../dbSchema/dbTicketsSchema.js";
 import type { TFindAllTicketsParams } from "../types/index.js";
 
-/** Liczba zgłoszeń spełniających te same kryteria co findAll (status, search). */
-export async function findCount(
+export const findCount = async (
   params: Pick<TFindAllTicketsParams, "status" | "search">
-): Promise<number> {
+): Promise<number> => {
   const { status, search } = params;
 
   const conditions = [];
@@ -31,4 +30,4 @@ export async function findCount(
     .where(whereClause);
 
   return result[0]?.count ?? 0;
-}
+};

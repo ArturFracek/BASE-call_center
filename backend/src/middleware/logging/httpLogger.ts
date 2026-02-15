@@ -1,11 +1,11 @@
 import type { NextFunction, Request, Response } from "express";
 import logger from "../../helpers/logger.js";
 
-export function httpLogger(
+export const httpLogger = (
   req: Request,
   res: Response,
   next: NextFunction
-): void {
+): void => {
   const startTime = performance.now();
 
   const onEnd = (): void => {
@@ -39,4 +39,4 @@ export function httpLogger(
   res.on("close", onEnd);
 
   next();
-}
+};

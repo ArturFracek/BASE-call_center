@@ -2,12 +2,12 @@ import type { NextFunction, Request, Response } from "express";
 import { BadRequestError } from "../../errors/index.js";
 import logger from "../../helpers/logger.js";
 
-export function badRequestErrorHandler(
+export const badRequestErrorHandler = (
   error: unknown,
   req: Request,
   res: Response,
   next: NextFunction
-): void {
+): void => {
   if (error instanceof BadRequestError) {
     logger.error(
       { req, err: error },
@@ -20,4 +20,4 @@ export function badRequestErrorHandler(
     return;
   }
   next(error as Error);
-}
+};

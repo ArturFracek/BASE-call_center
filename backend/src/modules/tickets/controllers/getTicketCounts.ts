@@ -1,10 +1,10 @@
 import type { Request, Response } from "express";
 import { ticketsService } from "../services/index.js";
 
-export const getTicketById = async (
-  req: Request,
+export const getTicketCounts = async (
+  _req: Request,
   res: Response
 ): Promise<void> => {
-  const ticket = await ticketsService.getTicketById(req.params.id);
-  res.json(ticket);
+  const counts = await ticketsService.getTicketCounts();
+  res.json(counts);
 };

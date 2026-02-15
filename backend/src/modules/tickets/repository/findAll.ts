@@ -3,9 +3,9 @@ import { db } from "../../../db/index.js";
 import { tickets } from "../dbSchema/dbTicketsSchema.js";
 import type { TTicket, TFindAllTicketsParams } from "../types/index.js";
 
-export async function findAll(
+export const findAll = async (
   params: TFindAllTicketsParams
-): Promise<TTicket[]> {
+): Promise<TTicket[]> => {
   const { status, limit, offset, search } = params;
 
   const conditions = [];
@@ -31,4 +31,4 @@ export async function findAll(
     .orderBy(asc(tickets.id))
     .limit(limit)
     .offset(offset);
-}
+};

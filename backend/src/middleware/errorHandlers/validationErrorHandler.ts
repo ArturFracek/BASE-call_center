@@ -1,12 +1,12 @@
 import type { NextFunction, Request, Response } from "express";
 import { ValidationError } from "../../errors/index.js";
 
-export function validationErrorHandler(
+export const validationErrorHandler = (
   error: unknown,
   _req: Request,
   res: Response,
   next: NextFunction
-): void {
+): void => {
   if (error instanceof ValidationError) {
     const rawIssues = error.errors?.issues ?? [];
     const errors = rawIssues.map((issue) => ({
@@ -21,4 +21,4 @@ export function validationErrorHandler(
     return;
   }
   next(error as Error);
-}
+};

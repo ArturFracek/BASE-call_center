@@ -8,7 +8,9 @@ export interface GetTicketsResult {
   total: number;
 }
 
-export async function getTickets(query: unknown): Promise<GetTicketsResult> {
+export const getTickets = async (
+  query: unknown
+): Promise<GetTicketsResult> => {
   const parsed = getTicketsQuerySchema.safeParse(query);
   if (!parsed.success) {
     throw new ValidationError("Invalid query", parsed.error);
@@ -28,4 +30,4 @@ export async function getTickets(query: unknown): Promise<GetTicketsResult> {
   ]);
 
   return { data, total };
-}
+};
