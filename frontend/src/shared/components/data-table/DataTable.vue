@@ -97,7 +97,8 @@ import {
 import TablePagination from "./TablePagination.vue";
 
 const HIGHLIGHT_CLASS = "data-table__row--highlight";
-const HIGHLIGHT_DURATION_MS = 2000;
+/** Czas trzymania klasy – musi pokrywać pełną animację (4×0.6s ≈ 2.4s). */
+const HIGHLIGHT_DURATION_MS = 2600;
 
 interface IProps {
   opts: IDataTableOpts;
@@ -206,7 +207,7 @@ defineExpose({
   letter-spacing: 0.025em
 
 .data-table__row--highlight
-  animation: data-table-row-highlight 0.5s ease-out 2
+  animation: data-table-row-highlight 0.6s ease-out 4
 
 @keyframes data-table-row-highlight
   0%, 100%

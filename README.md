@@ -153,22 +153,42 @@ Wartości domyślne (porty, nazwa bazy, klucze env, ścieżki, komendy) są zdef
 
 ### Frontend
 
-- **Vue 3** (Composition API), **Vite 7**, **TypeScript 5** (strict, type-check przez vue-tsc w build)
-- **Pinia** – stan aplikacji, **Vue Router 5** – routing
-- **Tailwind CSS 4** – stylowanie; **shadcn-vue** – komponenty UI (na bazie Reka UI, ostylowane Tailwind); **Reka UI** – warstwa headless, **Lucide Vue** – ikony
-- **CVA** (class-variance-authority), **clsx**, **tailwind-merge** – składanie klas; **tw-animate-css** – animacje
-- **TanStack Vue Table** – tabela z sortowaniem/paginacją, **Vue Virtual Scroller** – wirtualna lista kart
-- **Vue I18n** – wielojęzyczność (PL/EN), **VueUse** – composables (np. useLocalStorage)
-- **Axios** – requesty do API, **Luxon** – daty/czas, **lodash-es** – utilities
+- **Vue 3** (Composition API)
+- **Vite 7**
+- **TypeScript 5** (strict, type-check przez vue-tsc w build)
+- **Pinia** – stan aplikacji
+- **Vue Router 5** – routing
+- **Tailwind CSS 4** – stylowanie
+- **shadcn-vue** – komponenty UI (na bazie Reka UI, ostylowane Tailwind)
+- **Reka UI** – warstwa headless
+- **Lucide Vue** – ikony
+- **CVA** (class-variance-authority) – warianty klas
+- **clsx**, **tailwind-merge** – składanie klas
+- **tw-animate-css** – animacje
+- **TanStack Vue Table** – tabela z sortowaniem/paginacją
+- **Vue Virtual Scroller** – wirtualna lista kart
+- **Vue I18n** – wielojęzyczność (PL/EN)
+- **VueUse** – composables (np. useLocalStorage)
+- **Axios** – requesty do API
+- **Luxon** – daty/czas
+- **lodash-es** – utilities
 - **Sass** – preprocesor CSS (dev)
-- **Vitest**, **@vue/test-utils**, **happy-dom** – testy jednostkowe; **ESLint**, **oxlint** – lintowanie
+- **Vitest** – testy jednostkowe
+- **@vue/test-utils**, **happy-dom** – środowisko testowe
+- **ESLint** – lintowanie
+- **oxlint** – lintowanie
 
 ### Backend
 
-- **Node.js**, **Express 5**, **TypeScript**
-- **Drizzle ORM** + **drizzle-kit** – schema, migracje, push, seed; **postgres** (driver)
+- **Node.js**
+- **Express 5**
+- **TypeScript**
+- **Drizzle ORM** + **drizzle-kit** – schema, migracje, push, seed
+- **postgres** – driver do bazy
 - **Zod** – walidacja wejścia (query, body, params)
-- **Pino** – logowanie HTTP i aplikacji, **Helmet** – nagłówki bezpieczeństwa, **CORS**
+- **Pino** – logowanie HTTP i aplikacji
+- **Helmet** – nagłówki bezpieczeństwa
+- **CORS**
 - **dotenv** – zmienne środowiskowe (`.env`)
 
 ---
@@ -184,4 +204,14 @@ Wartości domyślne (porty, nazwa bazy, klucze env, ścieżki, komendy) są zdef
 - **API REST** – `GET /tickets` (lista z paginacją/filtrami), `GET /tickets/counts` (liczniki), `GET /tickets/:id` (szczegóły), `PATCH /tickets/:id` (zmiana statusu). Walidacja wejścia (Zod), logowanie requestów (Pino).
 
 **Zabiegi optymalizacyjne:** wirtualizacja listy kart (Vue Virtual Scroller – renderowanie tylko widocznych pozycji), paginacja po stronie serwera (limit/offset), sortowanie w DataTable bez zbędnych przeładowań, podświetlenie edytowanego wiersza realizowane przez ref do konkretnego wiersza i krótką klasę CSS (bez przeładowania całej listy). **Keep-alive** na widokach routera – zachowanie stanu listy przy przejściu do szczegółów i z powrotem. **Teleport** dla toastów – powiadomienia renderowane poza drzewem komponentu (np. w `body`), żeby nie wpływały na layout i nakładki.
+
+**Ciekawe rozwiązania w kodzie:**
+
+- **Powrót z detalu po zapisie** – widok szczegółów przy zapisie przekazuje w route `query.updated=id`. Lista nasłuchuje na ten parametr, wywołuje `highlightRow(id)` na DataTable (przez `defineExpose`), po czym czyści query (`router.replace`), bez przeładowania i bez gubienia aktualnej strony dzięki `setStatusFilter(..., { resetPage: false })`.
+- **DataTable a podświetlenie wiersza** – każdy wiersz ma `ref` zapisany po kluczu (np. `id`); komponent eksponuje metodę `highlightRow(id)`. Helpery `getElementFromRef` (ref może być komponentem Vue lub `HTMLElement`) i `temporarilyAddClass` – dodanie klasy na 2 s i automatyczne jej usunięcie. Wiersze z `v-memo` dla stabilności przy aktualizacji danych.
+- **Wysokość scrollera na mobile** – `useMeasuredHeight` z **ResizeObserver** mierzy rzeczywistą wysokość kontenera; wynik (np. `scrollerHeightPx`) używany jest do ustawienia wysokości Vue Virtual Scroller, żeby zawsze mieściła się stała liczba kart. Na desktopie używana jest stała wartość z konfiguracji.
+- **Filtry i paginacja** – `useTicketsFilter` trzyma status i stronę; przy zmianie wywołuje `store.fetchTickets`. Opcja `resetPage: false` przy powrocie z detalu pozwala zostawić bieżącą stronę i tylko podświetlić wiersz.
+- **Toasty** – globalny stan (`shallowRef`), każdy toast ma unikalne `id` (`generateId`), auto-ukrywanie po zadanym czasie (timer w `Map`), komponent wyświetlany przez **Teleport** do dedykowanego kontenera.
+- **Kompozycja tabeli** – `useDataTable` przyjmuje kolumny, dane, `rowKey`, opcje paginacji i sortowania, zwraca `tableOpts` (computed) przekazywany do DataTable; jedna konfiguracja dla nagłówka, wierszy, pustego stanu i paginacji.
+- **Klasy i daty** – helper `cn` (clsx + tailwind-merge) do spójnego łączenia klas; `formatDateTime` (Luxon) z opcjonalnym locale (domyślnie z `navigator.language`) dla spójnego formatu dat w całej aplikacji.
 
