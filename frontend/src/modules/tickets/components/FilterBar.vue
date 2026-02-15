@@ -44,17 +44,16 @@ const model = defineModel<TStatusFilter>({
 });
 </script>
 
-<style scoped>
+<style scoped lang="sass">
 .filter-options-enter-active,
-.filter-options-leave-active {
-  transition: opacity 0.15s ease, transform 0.15s ease;
-}
+.filter-options-leave-active
+  transition: opacity 0.15s ease, transform 0.15s ease
+
 .filter-options-enter-from,
-.filter-options-leave-to {
-  opacity: 0;
-  transform: translateY(-4px);
-}
-.filter-options-move {
-  transition: transform 0.2s ease;
-}
+.filter-options-leave-to
+  opacity: 0
+  transform: translateY(-4px)
+
+.filter-options-move
+  transition: transform 0.2s ease
 </style>
