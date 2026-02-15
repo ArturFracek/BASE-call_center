@@ -1,3 +1,12 @@
+<template>
+  <thead
+    data-slot="table-header"
+    :class="cn('[&_tr]:border-b', props.class)"
+  >
+    <slot />
+  </thead>
+</template>
+
 <script setup lang="ts">
 import type { HTMLAttributes } from "vue"
 import { cn } from '@/shared/helpers/classNames'
@@ -8,12 +17,3 @@ interface Props {
 
 const props = defineProps<Props>()
 </script>
-
-<template>
-  <thead
-    data-slot="table-header"
-    :class="cn('[&_tr]:border-b', props.class)"
-  >
-    <slot />
-  </thead>
-</template>

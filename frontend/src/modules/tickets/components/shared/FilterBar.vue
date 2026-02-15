@@ -18,6 +18,10 @@
           :value="opt"
         >
           {{ $t("tickets.filter." + opt) }}
+          <span
+            v-if="countForOption(opt) !== null"
+            class="text-muted-foreground"
+          >({{ countForOption(opt) }})</span>
         </SelectItem>
       </TransitionGroup>
     </SelectContent>
@@ -37,11 +41,21 @@ import {
   STATUS_FILTER_OPTIONS,
   STATUS_FILTER_OPTIONS_LIST,
 } from "@/modules/tickets/consts";
+import { useTicketsStore } from "@/modules/tickets/stores/ticketsStore";
 import type { TStatusFilter } from "@/modules/tickets/types";
 
 const model = defineModel<TStatusFilter>({
   default: STATUS_FILTER_OPTIONS.ALL,
 });
+
+const store = useTicketsStore();
+
+const countForOption = (opt: TStatusFilter): number | null => {
+  const counts = store.countsByStatus;
+  if (!counts) return null;
+  if (opt === STATUS_FILTER_OPTIONS.ALL) return counts.all;
+  return counts[opt] ?? null;
+};
 </script>
 
 <style scoped lang="sass">

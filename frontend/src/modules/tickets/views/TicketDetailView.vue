@@ -1,11 +1,23 @@
 <template>
   <main class="ticket-detail-view">
-    <RouterLink
-      :to="{ name: 'tickets' }"
-      class="ticket-detail-view__back text-primary underline text-sm mb-4 inline-block"
-    >
-      {{ $t("tickets.buttons.backToList") }}
-    </RouterLink>
+    <Breadcrumb class="ticket-detail-view__breadcrumb">
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink
+            :as="RouterLink"
+            :to="{ name: 'tickets' }"
+            class="inline-flex items-center gap-1.5 hover:underline"
+          >
+            <ChevronLeft class="size-4 shrink-0" />
+            {{ $t("tickets.headers.list") }}
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbPage>{{ $t("tickets.headers.detail") }}</BreadcrumbPage>
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
 
     <Transition
       name="ticket-detail-fade"
@@ -19,14 +31,29 @@
         v-else-if="notFound"
         key="notFound"
       />
-      <div
+      <Card
         v-else-if="ticket"
         key="ticket"
+        class="ticket-detail-view__card"
       >
-        <h1 class="text-2xl font-semibold tracking-tight text-foreground">
-          {{ $t("tickets.headers.detail") }}
-        </h1>
-        <div class="ticket-detail-view__body mt-6 space-y-4">
+        <CardHeader class="ticket-detail-view__card-header">
+          <CardTitle class="text-2xl">
+            {{ $t("tickets.headers.detail") }}
+          </CardTitle>
+          <div
+            class="ticket-detail-view__current-status"
+            :class="`ticket-detail-view__current-status--${ticket.status}`"
+          >
+            <span
+              class="ticket-detail-view__current-status-dot"
+              aria-hidden="true"
+            />
+            <span class="ticket-detail-view__current-status-value">
+              {{ $t("tickets.status." + ticket.status) }}
+            </span>
+          </div>
+        </CardHeader>
+        <CardContent class="flex flex-col gap-6 pt-0">
           <TicketDetailFields
             :fields="detailFields"
             :ticket="ticket"
@@ -38,8 +65,8 @@
             :status-options="statusOptions"
             @save="saveStatus"
           />
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </Transition>
   </main>
 </template>
@@ -48,7 +75,16 @@
 import { computed, ref, watch } from "vue";
 import { toRef } from "vue";
 import { useI18n } from "vue-i18n";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
+import { ChevronLeft } from "lucide-vue-next";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/shared/components/ui/breadcrumb";
 import { displayToast } from "@/composables/useToast";
 import { formatDateTime } from "@/shared/helpers/formatDateTime";
 import { TICKET_STATUSES } from "@/modules/tickets/consts";
@@ -60,6 +96,12 @@ import {
 } from "@/modules/tickets/components/sections/ticketDetailsSections";
 import { useTicketsStore } from "@/modules/tickets/stores/ticketsStore";
 import type { ITicket, TTicketStatus } from "@/modules/tickets/types";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/shared/components/ui/card";
 
 interface Props {
   id: string;
@@ -83,6 +125,7 @@ const DETAIL_FIELD_KEYS: Array<{
   labelKey: string;
   getValue: (t: ITicket, tFn: (key: string) => string) => string;
   contentClass?: string;
+  fullWidth?: boolean;
 }> = [
   {
     fieldKey: "id",
@@ -98,12 +141,14 @@ const DETAIL_FIELD_KEYS: Array<{
     fieldKey: "subject",
     labelKey: "tickets.headers.subject",
     getValue: (t) => t.subject,
+    fullWidth: true,
   },
   {
     fieldKey: "description",
     labelKey: "tickets.headers.description",
     getValue: (t) => t.description,
     contentClass: "whitespace-pre-wrap",
+    fullWidth: true,
   },
   {
     fieldKey: "priority",
@@ -120,12 +165,13 @@ const DETAIL_FIELD_KEYS: Array<{
 const detailFields = computed(() => {
   if (!ticket.value) return [];
   return DETAIL_FIELD_KEYS.map(
-    ({ fieldKey, labelKey, getValue, contentClass }) => ({
+    ({ fieldKey, labelKey, getValue, contentClass, fullWidth }) => ({
       fieldKey,
       labelKey,
       label: t(labelKey),
       value: getValue(ticket.value!, t),
       contentClass,
+      fullWidth,
     })
   );
 });
@@ -144,6 +190,8 @@ watch(
   { immediate: true }
 );
 
+const router = useRouter();
+
 const saveStatus = async (): Promise<void> => {
   const current = store.currentTicket;
   if (!current || saving.value) return;
@@ -153,7 +201,10 @@ const saveStatus = async (): Promise<void> => {
   try {
     await store.updateTicketStatus(current.id, selectedStatus.value);
     displayToast("success", t("tickets.messages.updateSuccess"));
-    await store.fetchTicketById(current.id);
+    router.push({
+      name: "tickets",
+      query: { updated: String(current.id) },
+    });
   } finally {
     saving.value = false;
   }
@@ -166,9 +217,42 @@ const saveStatus = async (): Promise<void> => {
   margin-inline: auto
   padding: 1.5rem 1rem
 
-  &__back
-    &:hover
-      text-decoration: none
+  &__breadcrumb
+    margin-bottom: 1.5rem
+
+  &__card-header
+    display: flex
+    flex-direction: row
+    flex-wrap: wrap
+    align-items: baseline
+    justify-content: space-between
+    gap: 1rem
+
+  &__current-status
+    display: inline-flex
+    align-items: center
+    gap: 0.5rem
+    font-size: 1rem
+    line-height: 1.4
+    font-weight: 600
+    color: var(--foreground)
+    align-self: flex-start
+
+    &-dot
+      width: 0.5rem
+      height: 0.5rem
+      border-radius: 50%
+      flex-shrink: 0
+
+    &--new .ticket-detail-view__current-status-dot
+      background-color: var(--status-new)
+    &--in_progress .ticket-detail-view__current-status-dot
+      background-color: var(--status-in-progress)
+    &--closed .ticket-detail-view__current-status-dot
+      background-color: var(--status-closed)
+
+  &__card
+    border-radius: var(--radius)
 
 .ticket-detail-fade-enter-active,
 .ticket-detail-fade-leave-active

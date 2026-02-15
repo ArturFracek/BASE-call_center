@@ -7,3 +7,10 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv
 }
+
+declare module "vue-virtual-scroller" {
+  import type { App, Plugin } from "vue";
+  const plugin: Plugin;
+  export default plugin;
+  export const RecycleScroller: unknown;
+}

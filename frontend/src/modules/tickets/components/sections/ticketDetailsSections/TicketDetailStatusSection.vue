@@ -3,29 +3,27 @@
     class="ticket-detail-status-section"
     :aria-label="$t('tickets.aria.editStatus')"
   >
-    <DetailField :label="$t('tickets.headers.status')">
-      <div class="flex flex-wrap items-center gap-2">
-        <StatusBadge :status="ticket.status" />
-        <Select v-model="selectedStatus">
-          <SelectTrigger
-            class="w-[200px]"
-            :aria-label="$t('tickets.aria.statusSelect')"
+    <h2 class="ticket-detail-status-section__heading">
+      {{ $t("tickets.headers.status") }}
+    </h2>
+    <div class="ticket-detail-status-section__row">
+      <Select v-model="selectedStatus">
+        <SelectTrigger
+          class="w-[200px]"
+          :aria-label="$t('tickets.aria.statusSelect')"
+        >
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem
+            v-for="status in statusOptions"
+            :key="status"
+            :value="status"
           >
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem
-              v-for="status in statusOptions"
-              :key="status"
-              :value="status"
-            >
-              {{ $t("tickets.status." + status) }}
-            </SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-    </DetailField>
-    <div class="ticket-detail-status-section__actions flex gap-3 mt-2">
+            {{ $t("tickets.status." + status) }}
+          </SelectItem>
+        </SelectContent>
+      </Select>
       <Button
         :disabled="saving || selectedStatus === ticket.status"
         @click="emit('save')"
@@ -37,7 +35,6 @@
 </template>
 
 <script setup lang="ts">
-import { DetailField } from "@/shared/components/detail-field";
 import { Button } from "@/shared/components/ui/button";
 import {
   Select,
@@ -46,7 +43,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/components/ui/select";
-import StatusBadge from "@/modules/tickets/components/shared/StatusBadge.vue";
 import type { ITicket, TTicketStatus } from "@/modules/tickets/types";
 
 interface Props {
@@ -66,8 +62,16 @@ const emit = defineEmits<{
 
 <style scoped lang="sass">
 .ticket-detail-status-section
-  padding: 1rem
-  border: 1px solid var(--border)
-  border-radius: var(--radius)
-  background: var(--muted/30)
+  &__heading
+    margin: 0 0 0.75rem
+    font-size: 1rem
+    font-weight: 600
+    line-height: 1.4
+    color: var(--foreground)
+
+  &__row
+    display: flex
+    flex-wrap: wrap
+    align-items: center
+    gap: 0.5rem
 </style>

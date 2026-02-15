@@ -48,6 +48,12 @@
       "createdAt": "Data utworzenia",
       "description": "Opis"
     },
+    "sections": {
+      "details": "Dane zgłoszenia"
+    },
+    "labels": {
+      "currentStatus": "Obecny status"
+    },
     "buttons": {
       "save": "Zapisz",
       "backToList": "Powrót do listy"
