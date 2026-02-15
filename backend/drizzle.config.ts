@@ -1,6 +1,7 @@
 import { defineConfig } from "drizzle-kit";
+import { DEFAULT_DB_NAME, ENV_KEYS } from "./src/constants.js";
 
-const connectionString = process.env.DATABASE_URL;
+const connectionString = process.env[ENV_KEYS.DATABASE_URL];
 
 export default defineConfig({
   dialect: "postgresql",
@@ -13,7 +14,7 @@ export default defineConfig({
         port: parseInt(process.env.DB_PORT || "5432", 10),
         user: process.env.DB_USER || "postgres",
         password: process.env.DB_PASSWORD || undefined,
-        database: process.env.DB_NAME || "call_center",
+        database: process.env[ENV_KEYS.DB_NAME] || DEFAULT_DB_NAME,
         ssl: false,
       },
 });
