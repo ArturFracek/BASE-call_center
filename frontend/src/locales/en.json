@@ -16,6 +16,7 @@
       "pagination": "Table pagination",
       "prevPage": "Previous page",
       "nextPage": "Next page",
+      "pageNumber": "Page {page}",
       "close": "Close",
       "notifications": "Notifications"
     }
@@ -46,7 +47,8 @@
       "status": "Status",
       "priority": "Priority",
       "createdAt": "Created at",
-      "description": "Description"
+      "description": "Description",
+      "actions": "Actions"
     },
     "sections": {
       "details": "Ticket information"
@@ -56,7 +58,8 @@
     },
     "buttons": {
       "save": "Save",
-      "backToList": "Back to list"
+      "backToList": "Back to list",
+      "edit": "Edit"
     },
     "aria": {
       "editStatus": "Edit status",

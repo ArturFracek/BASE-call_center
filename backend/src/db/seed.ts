@@ -3,80 +3,103 @@ import { db } from "./index.js";
 import { tickets } from "../modules/tickets/dbSchema/dbTicketsSchema.js";
 import logger from "../helpers/logger.js";
 
-const seedTickets = [
-  {
-    customerName: "Jan Kowalski",
-    subject: "Problem z logowaniem",
-    description: "Nie mogę się zalogować do systemu od wczoraj.",
-    priority: "high" as const,
-    status: "new" as const,
-  },
-  {
-    customerName: "Anna Nowak",
-    subject: "Awaria drukarki",
-    description: "Drukarka w biurze nie drukuje od rana.",
-    priority: "medium" as const,
-    status: "in_progress" as const,
-  },
-  {
-    customerName: "Piotr Wiśniewski",
-    subject: "Zapytanie o fakturę",
-    description: "Proszę o przesłanie faktury za ostatni miesiąc.",
-    priority: "low" as const,
-    status: "closed" as const,
-  },
-  {
-    customerName: "Maria Dąbrowska",
-    subject: "Zmiana hasła",
-    description: "Nie pamiętam hasła do konta, potrzebuję resetu.",
-    priority: "high" as const,
-    status: "new" as const,
-  },
-  {
-    customerName: "Tomasz Lewandowski",
-    subject: "Wolne działanie systemu",
-    description: "Aplikacja bardzo się przycina przy otwieraniu raportów.",
-    priority: "medium" as const,
-    status: "in_progress" as const,
-  },
-  {
-    customerName: "Katarzyna Kamińska",
-    subject: "Dostęp do nowego modułu",
-    description: "Proszę o nadanie uprawnień do modułu CRM.",
-    priority: "low" as const,
-    status: "new" as const,
-  },
-  {
-    customerName: "Michał Zieliński",
-    subject: "Błąd przy zapisie",
-    description: "Po zapisaniu formularza pojawia się komunikat 500.",
-    priority: "high" as const,
-    status: "in_progress" as const,
-  },
-  {
-    customerName: "Ewa Szymańska",
-    subject: "Pytanie o integrację",
-    description: "Czy system obsługuje eksport do Excel?",
-    priority: "low" as const,
-    status: "closed" as const,
-  },
-  {
-    customerName: "Adam Woźniak",
-    subject: "Zawieszenie konta",
-    description: "Moje konto zostało zablokowane bez podania przyczyny.",
-    priority: "high" as const,
-    status: "new" as const,
-  },
-  {
-    customerName: "Magdalena Kozłowska",
-    subject: "Aktualizacja danych",
-    description: "Proszę o aktualizację numeru NIP w systemie.",
-    priority: "medium" as const,
-    status: "closed" as const,
-  },
+type TicketPriority = "low" | "medium" | "high";
+type TicketStatus = "new" | "in_progress" | "closed";
+
+const CUSTOMER_NAMES = [
+  "Jan Kowalski",
+  "Anna Nowak",
+  "Piotr Wiśniewski",
+  "Maria Dąbrowska",
+  "Tomasz Lewandowski",
+  "Katarzyna Kamińska",
+  "Michał Zieliński",
+  "Ewa Szymańska",
+  "Adam Woźniak",
+  "Magdalena Kozłowska",
+  "Paweł Jankowski",
+  "Aleksandra Wojcik",
+  "Krzysztof Kowalczyk",
+  "Joanna Mazur",
+  "Andrzej Król",
+  "Monika Piotrowska",
+  "Marcin Grabowski",
+  "Natalia Kaczmarek",
+  "Jakub Rutkowski",
+  "Agata Duda",
 ];
 
+const SUBJECTS = [
+  "Problem z logowaniem",
+  "Awaria drukarki",
+  "Zapytanie o fakturę",
+  "Zmiana hasła",
+  "Wolne działanie systemu",
+  "Dostęp do nowego modułu",
+  "Błąd przy zapisie",
+  "Pytanie o integrację",
+  "Zawieszenie konta",
+  "Aktualizacja danych",
+  "Konfiguracja email",
+  "Brak dostępu do raportów",
+  "Eksport danych do CSV",
+  "Synchronizacja kalendarza",
+  "Reset uprawnień",
+  "Instalacja na nowym PC",
+  "Błąd 404 na podstronie",
+  "Prośba o szkolenie",
+  "Integracja z API",
+  "Przedłużenie licencji",
+];
+
+const DESCRIPTIONS = [
+  "Nie mogę się zalogować do systemu od wczoraj.",
+  "Drukarka w biurze nie drukuje od rana.",
+  "Proszę o przesłanie faktury za ostatni miesiąc.",
+  "Nie pamiętam hasła do konta, potrzebuję resetu.",
+  "Aplikacja bardzo się przycina przy otwieraniu raportów.",
+  "Proszę o nadanie uprawnień do modułu CRM.",
+  "Po zapisaniu formularza pojawia się komunikat 500.",
+  "Czy system obsługuje eksport do Excel?",
+  "Moje konto zostało zablokowane bez podania przyczyny.",
+  "Proszę o aktualizację numeru NIP w systemie.",
+  "Nie mogę skonfigurować skrzynki pocztowej.",
+  "Raporty nie ładują się od dwóch dni.",
+  "Eksport przerywa się w połowie.",
+  "Kalendarz nie synchronizuje z Outlook.",
+  "Uprawnienia zniknęły po aktualizacji.",
+  "Instalator nie uruchamia się na Windows 11.",
+  "Strona zwraca błąd 404.",
+  "Chciałbym umówić szkolenie dla zespołu.",
+  "Dokumentacja API zwraca nieaktualne dane.",
+  "Licencja wygasa za tydzień, proszę o przedłużenie.",
+];
+
+const PRIORITIES: TicketPriority[] = ["high", "medium", "low"];
+const STATUSES: TicketStatus[] = ["new", "in_progress", "closed"];
+
+const SEED_COUNT = 100;
+
+function buildSeedTickets(): Array<{
+  customerName: string;
+  subject: string;
+  description: string;
+  priority: TicketPriority;
+  status: TicketStatus;
+}> {
+  return Array.from({ length: SEED_COUNT }, (_, i) => ({
+    customerName: CUSTOMER_NAMES[i % CUSTOMER_NAMES.length],
+    subject: `${SUBJECTS[i % SUBJECTS.length]} #${i + 1}`,
+    description: DESCRIPTIONS[i % DESCRIPTIONS.length],
+    priority: PRIORITIES[i % PRIORITIES.length],
+    status: STATUSES[i % STATUSES.length],
+  }));
+}
+
+const seedTickets = buildSeedTickets();
+
 const seed = async () => {
+  await db.delete(tickets);
   await db.insert(tickets).values(seedTickets);
 };
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <p class="text-muted-foreground">
-      {{ $t("tickets.messages.loading") }}
+      {{ t("tickets.messages.loading") }}
     </p>
     <div
       class="ticket-detail-skeleton mt-6 space-y-4"
@@ -29,6 +29,12 @@
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
+</script>
 
 <style scoped lang="sass">
 .ticket-detail-skeleton

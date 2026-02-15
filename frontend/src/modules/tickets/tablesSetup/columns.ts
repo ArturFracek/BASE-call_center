@@ -11,4 +11,5 @@ export const TICKET_TABLE_COLUMNS: DataTableColumnOpts[] = [
   },
   { key: "status", header: "tickets.headers.status" },
   { key: "priority", header: "tickets.headers.priority" },
+  { key: "actions", header: "tickets.headers.actions" },
 ];

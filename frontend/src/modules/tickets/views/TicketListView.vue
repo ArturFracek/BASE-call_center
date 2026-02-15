@@ -36,6 +36,17 @@
           <template #cell-priority="{ row }">
             <PriorityBadge :priority="(row as ITicket).priority" />
           </template>
+          <template #cell-actions="{ row }">
+            <Button
+              variant="outline"
+              size="sm"
+              class="ticket-list-view__edit-btn"
+              :aria-label="$t('tickets.buttons.edit')"
+              @click.stop="goToDetail(row as ITicket)"
+            >
+              {{ $t("tickets.buttons.edit") }}
+            </Button>
+          </template>
         </DataTable>
 
         <div
@@ -75,6 +86,7 @@
 import { nextTick, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
+import { Button } from "@/shared/components/ui/button";
 import FilterBar from "@/modules/tickets/components/shared/FilterBar.vue";
 import PriorityBadge from "@/modules/tickets/components/shared/PriorityBadge.vue";
 import StatusBadge from "@/modules/tickets/components/shared/StatusBadge.vue";
@@ -210,6 +222,9 @@ watch(
     text-align: center
     padding: 0.5rem 0
     margin: 0
+
+  &__edit-btn
+    flex-shrink: 0
 
 @media (max-width: 768px)
   .ticket-list-view

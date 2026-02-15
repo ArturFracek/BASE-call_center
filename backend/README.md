@@ -49,14 +49,14 @@ createdb call_center
 ```bash
 npm run db:generate   # generuje pliki migracji w drizzle/
 npm run db:migrate    # stosuje migracje do bazy
-npm run db:seed       # wstawia 10 zgłoszeń
+npm run db:seed       # wstawia 100 zgłoszeń
 ```
 
 **Opcja B – push (szybkie, bez plików migracji):**
 
 ```bash
 npm run db:push       # synchronizuje schemę z bazy z kodem
-npm run db:seed       # wstawia 10 zgłoszeń
+npm run db:seed       # wstawia 100 zgłoszeń
 ```
 
 ### 4. Build i start
@@ -78,7 +78,7 @@ Serwer nasłuchuje na `PORT` z `.env` (domyślnie 3000).
 | `npm run db:generate` | Generuje pliki migracji z schemy (drizzle/); wymaga tsx (ładowanie .ts) |
 | `npm run db:migrate` | Stosuje migracje do bazy                    |
 | `npm run db:push` | Synchronizuje schemę z bazy bez migracji (wymaga tsx)     |
-| `npm run db:seed` | Seed 10 zgłoszeń                             |
+| `npm run db:seed` | Seed 100 zgłoszeń                            |
 | `npm run db:studio` | Drizzle Studio (UI)                         |
 
 ## API

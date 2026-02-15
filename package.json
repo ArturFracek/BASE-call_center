@@ -1,0 +1,13 @@
+{
+  "name": "call-center",
+  "private": true,
+  "description": "Panel operatora call center – lista zgłoszeń, szczegóły, zmiana statusu",
+  "scripts": {
+    "setup": "node scripts/setup.mjs",
+    "dev": "concurrently -n backend,frontend -c blue,green \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "start": "npm run setup"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}

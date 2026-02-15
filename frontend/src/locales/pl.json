@@ -16,6 +16,7 @@
       "pagination": "Paginacja tabeli",
       "prevPage": "Poprzednia strona",
       "nextPage": "Następna strona",
+      "pageNumber": "Strona {page}",
       "close": "Zamknij",
       "notifications": "Powiadomienia"
     }
@@ -46,7 +47,8 @@
       "status": "Status",
       "priority": "Priorytet",
       "createdAt": "Data utworzenia",
-      "description": "Opis"
+      "description": "Opis",
+      "actions": "Akcje"
     },
     "sections": {
       "details": "Dane zgłoszenia"
@@ -56,7 +58,8 @@
     },
     "buttons": {
       "save": "Zapisz",
-      "backToList": "Powrót do listy"
+      "backToList": "Powrót do listy",
+      "edit": "Edytuj"
     },
     "aria": {
       "editStatus": "Edycja statusu",
