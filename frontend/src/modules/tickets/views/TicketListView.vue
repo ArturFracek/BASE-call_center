@@ -5,20 +5,20 @@
         v-once
         class="ticket-list-view__title"
       >
-        {{ $t("tickets.headers.list") }}
+        {{ t("tickets.headers.list") }}
       </h1>
       <FilterBar v-model="statusFilter" />
     </header>
 
     <template v-if="store.loading">
       <p class="ticket-list-view__message">
-        {{ $t("tickets.messages.loading") }}
+        {{ t("tickets.messages.loading") }}
       </p>
     </template>
     <template v-else>
       <template v-if="tickets.length === 0">
         <p class="ticket-list-view__message">
-          {{ $t("tickets.messages.emptyList") }}
+          {{ t("tickets.messages.emptyList") }}
         </p>
       </template>
       <template v-else>
@@ -41,10 +41,10 @@
               variant="outline"
               size="sm"
               class="ticket-list-view__edit-btn"
-              :aria-label="$t('tickets.buttons.edit')"
+              :aria-label="t('tickets.buttons.edit')"
               @click.stop="goToDetail(row as ITicket)"
             >
-              {{ $t("tickets.buttons.edit") }}
+              {{ t("tickets.buttons.edit") }}
             </Button>
           </template>
         </DataTable>
@@ -53,28 +53,40 @@
           v-else
           class="ticket-list-view__cards"
         >
-          <RecycleScroller
-            v-slot="{ item }"
-            class="ticket-list-view__scroller"
-            :style="{ height: virtualScroller.scrollerHeight + 'px' }"
-            :items="tickets"
-            :item-size="virtualScroller.itemSize"
-            :key-field="virtualScroller.keyField"
-            :buffer="virtualScroller.buffer"
+          <div
+            ref="scrollerWrapRef"
+            class="ticket-list-view__scroller-wrap"
           >
-            <div
-              class="ticket-list-view__scroller-item"
-              :style="{ height: virtualScroller.itemSize + 'px' }"
+            <RecycleScroller
+              v-if="scrollerHeightPx > 0"
+              v-slot="{ item: row }"
+              class="ticket-list-view__scroller"
+              :style="{ height: scrollerHeightPx + 'px' }"
+              :items="ticketRows"
+              :item-size="virtualScroller.itemSize"
+              key-field="id"
+              :buffer="virtualScroller.buffer"
             >
-              <TicketCard :ticket="item" />
-            </div>
-          </RecycleScroller>
+              <div
+                class="ticket-list-view__scroller-item"
+                :style="{ height: virtualScroller.itemSize + 'px' }"
+              >
+                <div
+                  v-for="ticket in row.tickets"
+                  :key="ticket.id"
+                  class="ticket-list-view__card-inner"
+                >
+                  <TicketCard :ticket="ticket" />
+                </div>
+              </div>
+            </RecycleScroller>
+          </div>
           <p
             v-if="store.loading"
             class="ticket-list-view__loader"
             aria-live="polite"
           >
-            {{ $t("tickets.messages.loading") }}
+            {{ t("tickets.messages.loading") }}
           </p>
         </div>
       </template>
@@ -83,7 +95,7 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, ref, watch } from "vue";
+import { computed, nextTick, onUnmounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import { Button } from "@/shared/components/ui/button";
@@ -91,7 +103,11 @@ import FilterBar from "@/modules/tickets/components/shared/FilterBar.vue";
 import PriorityBadge from "@/modules/tickets/components/shared/PriorityBadge.vue";
 import StatusBadge from "@/modules/tickets/components/shared/StatusBadge.vue";
 import TicketCard from "@/modules/tickets/components/shared/TicketCard.vue";
-import { STATUS_FILTER_OPTIONS } from "@/modules/tickets/consts";
+import {
+  STATUS_FILTER_OPTIONS,
+  TICKET_LIST_CARDS_LIMIT,
+  TICKET_LIST_PAGE_SIZE,
+} from "@/modules/tickets/consts";
 import { useTicketNavigation } from "@/modules/tickets/composables/useTicketNavigation";
 import { useTicketsFilter } from "@/modules/tickets/composables/useTicketsFilter";
 import { useTicketsStore } from "@/modules/tickets/stores/ticketsStore";
@@ -108,6 +124,10 @@ import { useVirtualScroller } from "@/shared/composables/useVirtualScroller";
 
 const store = useTicketsStore();
 const { t } = useI18n();
+const { isMobile } = useIsMobile();
+const limitRef = computed(() =>
+  isMobile.value ? TICKET_LIST_CARDS_LIMIT : TICKET_LIST_PAGE_SIZE
+);
 const {
   statusFilter,
   setStatusFilter,
@@ -116,15 +136,66 @@ const {
   setPage,
   pageSize,
   total,
-} = useTicketsFilter();
-const { isMobile } = useIsMobile();
+} = useTicketsFilter({ limitRef });
 const router = useRouter();
 const route = useRoute();
 const { goToDetail } = useTicketNavigation();
 const dataTableRef = ref<InstanceType<typeof DataTable> | null>(null);
+const scrollerWrapRef = ref<HTMLElement | null>(null);
+const scrollerHeightPx = ref(0);
 
 const virtualScroller = useVirtualScroller({
-  visibleCount: 5,
+  visibleCount: 4,
+  itemSize: 140,
+});
+
+const ticketRows = computed(() => {
+  const list = tickets.value;
+  const rows: { id: string; tickets: ITicket[] }[] = [];
+  for (let i = 0; i < list.length; i += 2) {
+    const a = list[i];
+    if (a == null) continue;
+    const b = list[i + 1];
+    const rowTickets: ITicket[] = b != null ? [a, b] : [a];
+    rows.push({
+      id: rowTickets.length === 2 ? `row-${a.id}-${b.id}` : `row-${a.id}`,
+      tickets: rowTickets,
+    });
+  }
+  return rows;
+});
+
+let resizeObserver: ResizeObserver | null = null;
+
+const measureScroller = (el: HTMLElement | null): void => {
+  if (!el) return;
+  const h = el.clientHeight;
+  scrollerHeightPx.value = h > 0 ? h : 400;
+};
+
+watch(
+  () => (isMobile.value ? scrollerWrapRef.value : null),
+  (el) => {
+    if (resizeObserver) {
+      resizeObserver.disconnect();
+      resizeObserver = null;
+    }
+    if (!el) {
+      scrollerHeightPx.value = 0;
+      return;
+    }
+    measureScroller(el);
+    resizeObserver = new ResizeObserver(() => measureScroller(el));
+    resizeObserver.observe(el);
+  },
+  { immediate: true, flush: "post" }
+);
+
+onUnmounted(() => {
+  if (resizeObserver) {
+    resizeObserver.disconnect();
+    resizeObserver = null;
+  }
 });
 
 const sortField = ref<string | null>(null);
@@ -182,11 +253,14 @@ watch(
   display: flex
   flex-direction: column
   gap: 1.5rem
+  flex: 1
+  min-height: 0
 
   &__header
     display: flex
     flex-direction: column
     gap: 1rem
+    flex-shrink: 0
 
   &__title
     font-size: 1.5rem
@@ -202,17 +276,36 @@ watch(
     display: flex
     flex-direction: column
     gap: 0.75rem
+    flex: 1
+    min-height: 0
+
+  &__scroller-wrap
+    flex: 1
+    min-height: 0
+    overflow: hidden
 
   &__scroller
     width: 100%
 
   &__scroller-item
     display: flex
-    flex-direction: column
+    flex-direction: row
+    gap: 0.5rem
+    padding-inline: 0.5rem
     padding-bottom: 0.5rem
     box-sizing: border-box
     flex-shrink: 0
     overflow: hidden
+
+  &__card-inner
+    flex: 1
+    min-width: 0
+    min-height: 0
+    display: flex
+
+    > *
+      width: 100%
+      min-height: 0
 
   &__loader
     color: var(--muted-foreground)
@@ -220,16 +313,23 @@ watch(
     text-align: center
     padding: 0.5rem 0
     margin: 0
+    flex-shrink: 0
 
   &__edit-btn
     flex-shrink: 0
 
 @media (max-width: 768px)
   .ticket-list-view
-    padding: 0.75rem 0.5rem
+    width: 100%
+    max-width: none
+    padding: 0.75rem 0
     gap: 0.75rem
   .ticket-list-view__header
+    width: 100%
+    padding-inline: 0.75rem
     gap: 0.5rem
   .ticket-list-view__cards
-    gap: 0.5rem
+    width: 100%
+  .ticket-list-view__scroller-wrap
+    width: 100%
 </style>

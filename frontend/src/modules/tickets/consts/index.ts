@@ -1,4 +1,6 @@
 export const TICKET_LIST_PAGE_SIZE = 10;
+/** Limit dla widoku kart (RecycleScroller) – jeden fetch, bez paginacji. */
+export const TICKET_LIST_CARDS_LIMIT = 100;
 
 export const TICKET_STATUSES = ["new", "in_progress", "closed"] as const;
 
