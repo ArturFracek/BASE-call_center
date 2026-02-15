@@ -1,13 +1,13 @@
 <template>
   <Teleport to="body">
     <div
-      class="fixed top-0 right-0 z-[100] flex max-h-screen w-full flex-col gap-2 overflow-hidden p-4 sm:max-w-[420px] sm:top-4 sm:right-4"
+      class="pointer-events-none fixed top-0 right-0 z-[100] flex max-h-screen w-full flex-col gap-2 overflow-hidden p-4 sm:max-w-[420px] sm:top-4 sm:right-4"
       :aria-label="$t('common.aria.notifications')"
     >
       <TransitionGroup
       name="toast"
       tag="div"
-      class="flex flex-col gap-2"
+      class="pointer-events-auto flex flex-col gap-2"
     >
       <SingleToast
         v-for="item in toasts"
