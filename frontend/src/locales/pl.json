@@ -1,7 +1,12 @@
 {
   "common": {
     "appTitle": "Panel zgłoszeń",
-    "language": "Język"
+    "language": "Język",
+    "pagination": {
+      "prev": "Poprzednia",
+      "next": "Następna",
+      "pageOf": "Strona {page} z {total}"
+    }
   },
   "tickets": {
     "status": {

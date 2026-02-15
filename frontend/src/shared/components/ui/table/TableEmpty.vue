@@ -5,10 +5,12 @@ import { cn } from '@/shared/helpers/classNames'
 import TableCell from "./TableCell.vue"
 import TableRow from "./TableRow.vue"
 
-const props = withDefaults(defineProps<{
+interface Props {
   class?: HTMLAttributes["class"]
   colspan?: number
-}>(), {
+}
+
+const props = withDefaults(defineProps<Props>(), {
   colspan: 1,
 })
 

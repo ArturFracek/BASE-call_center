@@ -6,7 +6,8 @@ import {
   timestamp,
   index,
 } from "drizzle-orm/pg-core";
-import { ticketPriorityEnum, ticketStatusEnum } from "./ticketEnums.js";
+// @ts-expect-error NodeNext wymaga rozszerzenia w importach; tu celowo pomijamy dla zgodności z drizzle-kit
+import { ticketPriorityEnum, ticketStatusEnum } from "./ticketEnums";
 
 export const tickets = pgTable(
   "tickets",

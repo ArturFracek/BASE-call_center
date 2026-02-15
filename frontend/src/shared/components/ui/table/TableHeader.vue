@@ -2,9 +2,11 @@
 import type { HTMLAttributes } from "vue"
 import { cn } from '@/shared/helpers/classNames'
 
-const props = defineProps<{
+interface Props {
   class?: HTMLAttributes["class"]
-}>()
+}
+
+const props = defineProps<Props>()
 </script>
 
 <template>

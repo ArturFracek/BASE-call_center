@@ -17,13 +17,13 @@ import { Primitive } from "reka-ui"
 import { mergeClasses } from '@/shared/helpers/classNames'
 import { buttonVariants } from "."
 
-interface IProps extends PrimitiveProps {
+interface Props extends PrimitiveProps {
   variant?: TButtonVariants["variant"]
   size?: TButtonVariants["size"]
   class?: HTMLAttributes["class"]
 }
 
-const props = withDefaults(defineProps<IProps>(), {
+const props = withDefaults(defineProps<Props>(), {
   as: "button",
 })
 </script>

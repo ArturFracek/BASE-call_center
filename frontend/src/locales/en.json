@@ -1,7 +1,12 @@
 {
   "common": {
     "appTitle": "Tickets panel",
-    "language": "Language"
+    "language": "Language",
+    "pagination": {
+      "prev": "Previous",
+      "next": "Next",
+      "pageOf": "Page {page} of {total}"
+    }
   },
   "tickets": {
     "status": {

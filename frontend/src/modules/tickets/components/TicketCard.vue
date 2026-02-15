@@ -42,14 +42,16 @@ import {
 import StatusBadge from "./StatusBadge.vue";
 import type { ITicket } from "@/modules/tickets/types";
 
-const props = defineProps<{
+interface Props {
   ticket: ITicket;
-}>();
+}
+
+const { ticket } = defineProps<Props>();
 
 const router = useRouter();
 
 function goToDetail(): void {
-  router.push({ name: "ticket-detail", params: { id: String(props.ticket.id) } });
+  router.push({ name: "ticket-detail", params: { id: String(ticket.id) } });
 }
 </script>
 

@@ -10,8 +10,8 @@ export async function findAll(
   params?: TFindAllTicketsParams
 ): Promise<FindAllResponse> {
   try {
-    const { data } = await ticketRepository.findAll(params);
-    return data;
+    const { data: response } = await ticketRepository.findAll(params);
+    return response;
   } catch (err) {
     displayToast("error", getErrorMessage(err, "tickets.messages.fetchError"));
     throw err;

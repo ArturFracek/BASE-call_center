@@ -2,9 +2,9 @@
   <div
     role="status"
     aria-live="polite"
-    :class="mergeClasses(toastVariants({ variant: type }))"
+    :class="mergeClasses(toastVariants({ variant: props.type }))"
   >
-    <span class="flex-1 font-medium">{{ message }}</span>
+    <span class="flex-1 font-medium">{{ props.message }}</span>
     <button
       type="button"
       aria-label="Zamknij"
@@ -24,12 +24,12 @@ import type { ToastType } from '@/composables/useToast'
 import { mergeClasses } from '@/shared/helpers/classNames'
 import { toastVariants } from '.'
 
-interface IProps {
+interface Props {
   type: ToastType
   message: string
 }
 
-defineProps<IProps>()
+const props = defineProps<Props>()
 
 const emit = defineEmits<{
   close: []

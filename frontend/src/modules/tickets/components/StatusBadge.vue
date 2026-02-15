@@ -3,7 +3,7 @@
     variant="outline"
     :class="badgeClass"
   >
-    {{ $t("tickets.status." + props.status) }}
+    {{ $t("tickets.status." + status) }}
   </Badge>
 </template>
 
@@ -12,11 +12,13 @@ import { computed } from "vue";
 import { Badge } from "@/shared/components/ui/badge";
 import type { TTicketStatus } from "@/modules/tickets/types";
 
-const props = defineProps<{
+interface Props {
   status: TTicketStatus;
-}>();
+}
 
-const badgeClass = computed(() => `status-badge status-badge--${props.status}`);
+const { status } = defineProps<Props>();
+
+const badgeClass = computed(() => `status-badge status-badge--${status}`);
 </script>
 
 <style scoped lang="sass">

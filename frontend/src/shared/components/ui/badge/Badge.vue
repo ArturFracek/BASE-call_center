@@ -7,10 +7,12 @@ import { Primitive } from "reka-ui"
 import { cn } from '@/shared/helpers/classNames'
 import { badgeVariants } from "."
 
-const props = defineProps<PrimitiveProps & {
+interface Props extends PrimitiveProps {
   variant?: BadgeVariants["variant"]
   class?: HTMLAttributes["class"]
-}>()
+}
+
+const props = defineProps<Props>()
 
 const delegatedProps = reactiveOmit(props, "class")
 </script>
@@ -18,7 +20,7 @@ const delegatedProps = reactiveOmit(props, "class")
 <template>
   <Primitive
     data-slot="badge"
-    :class="cn(badgeVariants({ variant }), props.class)"
+    :class="cn(badgeVariants({ variant: props.variant }), props.class)"
     v-bind="delegatedProps"
   >
     <slot />
