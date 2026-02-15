@@ -1,10 +1,6 @@
 import { defineStore } from "pinia";
 import { ticketsService } from "@/modules/tickets/services";
-import type {
-  ITicket,
-  TTicketStatus,
-  TStatusFilter,
-} from "@/modules/tickets/types";
+import type { ITicket, TTicketStatus } from "@/modules/tickets/types";
 
 export interface ITicketsState {
   tickets: ITicket[];
@@ -18,13 +14,9 @@ export const useTicketsStore = defineStore("tickets", {
   }),
 
   getters: {
-    getTicketsFilteredByStatus(
-      state
-    ): (filter: TStatusFilter) => ITicket[] {
-      return (filter: TStatusFilter) => {
-        if (filter === "all") return state.tickets;
-        return state.tickets.filter((t) => t.status === filter);
-      };
+    /** Lista zgłoszeń po ostatnim fetchTickets – filtrowanie po stronie backendu (param status). */
+    getFilteredTickets(state): ITicket[] {
+      return state.tickets;
     },
 
     getTicketById(state): (id: number) => ITicket | undefined {
