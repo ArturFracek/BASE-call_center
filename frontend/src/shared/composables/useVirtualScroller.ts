@@ -1,3 +1,5 @@
+import type { Ref } from "vue";
+
 export const VIRTUAL_SCROLLER_DEFAULTS = {
   itemSize: 140,
   visibleCount: 5,
@@ -11,6 +13,21 @@ export interface IUseVirtualScrollerOptions {
   keyField?: string;
   buffer?: number;
 }
+
+export interface IScrollToTopRefs {
+  scrollerRef: Ref<{ $el?: HTMLElement } | null>;
+  wrapRef: Ref<HTMLElement | null>;
+}
+
+export const scrollToTop = (refs: IScrollToTopRefs): void => {
+  const fromRef =
+    refs.scrollerRef.value?.$el ??
+    refs.wrapRef.value?.firstElementChild;
+  const el = fromRef as HTMLElement | null | undefined;
+  if (el?.scrollTo) {
+    el.scrollTo({ top: 0, behavior: "smooth" });
+  }
+};
 
 export const useVirtualScroller = (options: IUseVirtualScrollerOptions = {}) => {
   const {
@@ -27,5 +44,6 @@ export const useVirtualScroller = (options: IUseVirtualScrollerOptions = {}) => 
     keyField,
     buffer,
     scrollerHeight,
+    scrollToTop,
   };
 };

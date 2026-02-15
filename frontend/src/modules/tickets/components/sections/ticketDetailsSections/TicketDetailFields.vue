@@ -41,15 +41,9 @@
 import { DetailField } from "@/shared/components/detail-field";
 import PriorityBadge from "@/modules/tickets/components/shared/PriorityBadge.vue";
 import type { ITicket } from "@/modules/tickets/types";
+import type { ITicketDetailFieldItem } from "@/modules/tickets/utils/ticketDetailFields";
 
-export interface ITicketDetailFieldItem {
-  fieldKey: string;
-  labelKey: string;
-  label: string;
-  value: string;
-  contentClass?: string;
-  fullWidth?: boolean;
-}
+export type { ITicketDetailFieldItem };
 
 interface IProps {
   fields: ITicketDetailFieldItem[];

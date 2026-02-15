@@ -71,14 +71,14 @@
 import { ChevronLeft, ChevronRight } from "lucide-vue-next";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
+import { getPaginationRange } from "@/shared/helpers/pagination";
 import { Button } from "@/shared/components/ui/button";
 
 const { t } = useI18n();
 
 type TPageItem = number | "ellipsis";
 
-/** Zwraca listę numerów stron i wielokropków do wyświetlenia (np. [1, 'ellipsis', 4, 5, 6, 'ellipsis', 10]). */
-function getVisiblePageItems(total: number, current: number): TPageItem[] {
+const getVisiblePageItems = (total: number, current: number): TPageItem[] => {
   const totalPages = Math.max(1, total);
   if (totalPages <= 7) {
     return Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -96,7 +96,7 @@ function getVisiblePageItems(total: number, current: number): TPageItem[] {
   if (showRightEllipsis) items.push("ellipsis");
   if (totalPages > 1) items.push(totalPages);
   return items;
-}
+};
 
 interface IProps {
   page: number;
@@ -124,13 +124,12 @@ const visiblePageItems = computed((): TPageItem[] =>
 
 const rangeText = computed(() => {
   if (props.total === 0) return "0";
-  const firstOnPage = (props.page - 1) * props.pageSize + 1;
-  const lastOnPage = Math.min(props.page * props.pageSize, props.total);
-  return t("common.pagination.range", {
-    first: firstOnPage,
-    last: lastOnPage,
-    total: props.total,
-  });
+  const { first, last } = getPaginationRange(
+    props.page,
+    props.pageSize,
+    props.total
+  );
+  return t("common.pagination.range", { first, last, total: props.total });
 });
 
 const goPrev = (): void => {

@@ -104,7 +104,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onUnmounted, ref, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import { ChevronUp } from "lucide-vue-next";
@@ -123,6 +123,7 @@ import { useTicketsFilter } from "@/modules/tickets/composables/useTicketsFilter
 import { useTicketsStore } from "@/modules/tickets/stores/ticketsStore";
 import { TICKET_TABLE_COLUMNS } from "@/modules/tickets/tablesSetup";
 import type { ITicket } from "@/modules/tickets/types";
+import { ticketsToRows } from "@/modules/tickets/utils/ticketListRows";
 import {
   DataTable,
   SORT_ORDER,
@@ -130,6 +131,8 @@ import {
   type IDataTableSortPayload,
 } from "@/shared/components/data-table";
 import { useIsMobile } from "@/composables/useIsMobile";
+import { useMeasuredHeight } from "@/shared/composables/useMeasuredHeight";
+import { getQueryString } from "@/shared/helpers/routeQuery";
 import { useVirtualScroller } from "@/shared/composables/useVirtualScroller";
 
 const store = useTicketsStore();
@@ -148,8 +151,6 @@ const {
   total,
 } = useTicketsFilter({ limitRef });
 
-// Przy przejściu na widok mobilny (limit 100) strona 3 daje offset 200 → pusta lista.
-// Reset do strony 1, żeby pobrać pierwsze 100 zgłoszeń i pokazać kafelki.
 watch(isMobile, (mobile) => {
   if (mobile) setPage(1);
 });
@@ -160,71 +161,22 @@ const { goToDetail } = useTicketNavigation();
 const dataTableRef = ref<InstanceType<typeof DataTable> | null>(null);
 const scrollerWrapRef = ref<HTMLElement | null>(null);
 const recycleScrollerRef = ref<{ $el?: HTMLElement } | null>(null);
-const scrollerHeightPx = ref(0);
 
-function scrollToTop(): void {
-  const fromRef =
-    (recycleScrollerRef.value as { $el?: HTMLElement } | null)?.$el ??
-    scrollerWrapRef.value?.firstElementChild;
-  const el = fromRef as HTMLElement | null | undefined;
-  if (el?.scrollTo) {
-    el.scrollTo({ top: 0, behavior: "smooth" });
-  }
-}
+const virtualScroller = useVirtualScroller({ visibleCount: 4, itemSize: 140 });
 
-const virtualScroller = useVirtualScroller({
-  visibleCount: 4,
-  itemSize: 140,
+const { heightPx: scrollerHeightPx } = useMeasuredHeight(scrollerWrapRef, {
+  when: () => isMobile.value,
+  fallbackHeight: 400,
 });
 
-const ticketRows = computed(() => {
-  const list = tickets.value;
-  const rows: { id: string; tickets: ITicket[] }[] = [];
-  for (let i = 0; i < list.length; i += 2) {
-    const a = list[i];
-    if (a == null) continue;
-    const b = list[i + 1];
-    const rowTickets: ITicket[] = b != null ? [a, b] : [a];
-    rows.push({
-      id: rowTickets.length === 2 ? `row-${a.id}-${rowTickets[1].id}` : `row-${a.id}`,
-      tickets: rowTickets,
-    });
-  }
-  return rows;
-});
-
-let resizeObserver: ResizeObserver | null = null;
-
-const measureScroller = (el: HTMLElement | null): void => {
-  if (!el) return;
-  const h = el.clientHeight;
-  scrollerHeightPx.value = h > 0 ? h : 400;
+const scrollToTop = (): void => {
+  virtualScroller.scrollToTop({
+    scrollerRef: recycleScrollerRef,
+    wrapRef: scrollerWrapRef,
+  });
 };
 
-watch(
-  () => (isMobile.value ? scrollerWrapRef.value : null),
-  (el) => {
-    if (resizeObserver) {
-      resizeObserver.disconnect();
-      resizeObserver = null;
-    }
-    if (!el) {
-      scrollerHeightPx.value = 0;
-      return;
-    }
-    measureScroller(el);
-    resizeObserver = new ResizeObserver(() => measureScroller(el));
-    resizeObserver.observe(el);
-  },
-  { immediate: true, flush: "post" }
-);
-
-onUnmounted(() => {
-  if (resizeObserver) {
-    resizeObserver.disconnect();
-    resizeObserver = null;
-  }
-});
+const ticketRows = computed(() => ticketsToRows(tickets.value));
 
 const sortField = ref<string | null>(null);
 const sortOrder = ref<IDataTableSortPayload["order"]>(SORT_ORDER.ASC);
@@ -250,21 +202,16 @@ const handleSort = (payload: IDataTableSortPayload): void => {
   sortOrder.value = payload.order;
 };
 
-function getUpdatedTicketIdFromQuery(): string | null {
-  const raw = route.query.updated;
-  return typeof raw === "string" && raw.length > 0 ? raw : null;
-}
-
-function applyReturnFromDetailAfterSave(ticketId: string): void {
+const applyReturnFromDetailAfterSave = (ticketId: string): void => {
   setStatusFilter(STATUS_FILTER_OPTIONS.ALL, { resetPage: false });
   nextTick(() => {
     dataTableRef.value?.highlightRow(ticketId);
     router.replace({ name: "tickets" });
   });
-}
+};
 
 watch(
-  () => [getUpdatedTicketIdFromQuery(), tickets.value] as const,
+  () => [getQueryString(route, "updated"), tickets.value] as const,
   ([updatedId, currentTickets]) => {
     if (updatedId == null || !currentTickets?.length) return;
     applyReturnFromDetailAfterSave(updatedId);

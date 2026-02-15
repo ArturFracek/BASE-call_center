@@ -87,7 +87,6 @@ import {
 } from "@/shared/components/ui/breadcrumb";
 import { displayToast } from "@/composables/useToast";
 import { TICKET_STATUSES } from "@/modules/tickets/consts";
-import { TICKET_DETAIL_FIELD_DEFS } from "@/modules/tickets/config/ticketDetailFieldsConfig";
 import {
   TicketDetailFields,
   TicketDetailNotFound,
@@ -96,6 +95,7 @@ import {
 } from "@/modules/tickets/components/sections/ticketDetailsSections";
 import { useTicketsStore } from "@/modules/tickets/stores/ticketsStore";
 import type { ITicket, TTicketStatus } from "@/modules/tickets/types";
+import { getDetailFieldsForTicket } from "@/modules/tickets/utils/ticketDetailFields";
 import {
   Card,
   CardContent,
@@ -120,19 +120,9 @@ const selectedStatus = ref<TTicketStatus>("new");
 const saving = ref(false);
 const statusOptions = TICKET_STATUSES;
 
-const detailFields = computed(() => {
-  if (!ticket.value) return [];
-  return TICKET_DETAIL_FIELD_DEFS.map(
-    ({ fieldKey, labelKey, getValue, contentClass, fullWidth }) => ({
-      fieldKey,
-      labelKey,
-      label: t(labelKey),
-      value: getValue(ticket.value!, t),
-      contentClass,
-      fullWidth,
-    })
-  );
-});
+const detailFields = computed(() =>
+  getDetailFieldsForTicket(ticket.value, t)
+);
 
 watch(
   () => store.currentTicket,

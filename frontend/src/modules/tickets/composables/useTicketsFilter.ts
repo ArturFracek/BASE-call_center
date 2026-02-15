@@ -10,7 +10,6 @@ import type { ITicket, TStatusFilter } from "@/modules/tickets/types";
 const DEFAULT_FILTER = STATUS_FILTER_OPTIONS.ALL;
 
 export type UseTicketsFilterOptions = {
-  /** Gdy podany (np. limit dla widoku kart), używany zamiast TICKET_LIST_PAGE_SIZE. */
   limitRef?: Ref<number> | ComputedRef<number>;
 };
 
