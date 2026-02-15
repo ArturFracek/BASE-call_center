@@ -1,34 +1,44 @@
 <template>
-  <Badge
-    variant="outline"
-    :class="badgeClass"
+  <span
+    class="priority-indicator"
+    :class="`priority-indicator--${priority}`"
   >
+    <span
+      class="priority-indicator__dot"
+      :aria-hidden="true"
+    />
     {{ $t("tickets.priority." + priority) }}
-  </Badge>
+  </span>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-import { Badge } from "@/shared/components/ui/badge";
 import type { TTicketPriority } from "@/modules/tickets/types";
 
 interface Props {
   priority: TTicketPriority;
 }
 
-const { priority } = defineProps<Props>();
-
-const badgeClass = computed(() => `priority-badge priority-badge--${priority}`);
+defineProps<Props>();
 </script>
 
 <style scoped lang="sass">
-.priority-badge
-  border-color: transparent
-  color: white
-  &--low
+.priority-indicator
+  display: inline-flex
+  align-items: center
+  gap: 0.375rem
+  font-size: inherit
+  color: inherit
+
+  &__dot
+    width: 0.375rem
+    height: 0.375rem
+    border-radius: 50%
+    flex-shrink: 0
+
+  &--low .priority-indicator__dot
     background-color: var(--priority-low)
-  &--medium
+  &--medium .priority-indicator__dot
     background-color: var(--priority-medium)
-  &--high
+  &--high .priority-indicator__dot
     background-color: var(--priority-high)
 </style>

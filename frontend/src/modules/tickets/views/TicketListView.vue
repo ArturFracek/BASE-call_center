@@ -142,4 +142,13 @@ const goToDetail = (ticket: ITicket): void => {
     display: flex
     flex-direction: column
     gap: 0.75rem
+
+@media (max-width: 768px)
+  .ticket-list-view
+    padding: 0.75rem 0.5rem
+    gap: 0.75rem
+  .ticket-list-view__header
+    gap: 0.5rem
+  .ticket-list-view__cards
+    gap: 0.5rem
 </style>

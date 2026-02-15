@@ -60,4 +60,14 @@ const goToDetail = (): void => {
   &:focus-visible
     outline: 2px solid var(--ring)
     outline-offset: 2px
+
+@media (max-width: 768px)
+  .ticket-card
+    padding-top: 0.75rem
+    padding-bottom: 0.75rem
+    gap: 0.5rem
+  .ticket-card :deep([data-slot="card-header"]),
+  .ticket-card :deep([data-slot="card-content"])
+    padding-left: 0.75rem
+    padding-right: 0.75rem
 </style>
