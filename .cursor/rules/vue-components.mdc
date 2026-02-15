@@ -1,0 +1,21 @@
+---
+description: Konwencje komponentów Vue – template na górze, nazewnictwo
+globs: **/*.vue
+alwaysApply: false
+---
+
+# Komponenty Vue w projekcie
+
+## Kolejność bloków w SFC
+
+W plikach `.vue` (Single File Components) **zawsze** umieszczaj bloki w tej kolejności:
+
+1. **`<template>`** – na górze pliku
+2. **`<script>`** / `<script setup>` – pod template
+3. **`<style>`** (opcjonalnie) – na dole
+
+Template na górze ułatwia szybkie zrozumienie, co komponent renderuje; logika w script jest poniżej.
+
+## Nazewnictwo
+
+Nazwy zmiennych i funkcji mają **konkretnie opisywać**, co robią – bez niejasnych skrótów (zgodnie z zasadami projektu).
