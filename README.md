@@ -7,8 +7,9 @@ Aplikacja do obsługi zgłoszeń: lista z filtrem, szczegóły, zmiana statusu. 
 - [Jak uruchomić](#jak-uruchomić)
   - [Opcja A: Docker](#opcja-a-docker-jedna-komenda-bez-instalacji-nodepostgresql)
   - [Opcja B: Lokalnie](#opcja-b-lokalnie-nodejs--postgresql)
-  - [Uwaga: uruchomienie krok po kroku](#uwaga-jeśli-npm-run-start-nie-zadziała--uruchomienie-krok-po-kroku)
+  - [Uwaga: uruchomienie krok po kroku jezeli nie zadziala](#uwaga-jeśli-npm-run-start-nie-zadziała--uruchomienie-krok-po-kroku)
   - [Testy frontendu](#testy-frontendu)
+- [Architektura i podejście architektoniczne](#architektura-i-podejście-architektoniczne)
 - [Technologie](#technologie)
 - [Funkcjonalności projektu](#funkcjonalności-projektu)
 
@@ -129,23 +130,27 @@ Użyte: Vitest, @vue/test-utils, happy-dom, @pinia/testing. Szczegóły: [fronte
 
 ---
 
-## Na co zwrócić uwagę
+## Architektura i podejście architektoniczne
 
-Wartości domyślne (porty, nazwa bazy, klucze env, ścieżki, komendy) są zdefiniowane w stałych i używane w skryptach oraz w backendzie/frontendzie:
+Projekt ma strukturę **monorepo**: osobne katalogi `frontend` (Vue 3 + Vite) i `backend` (Express), współdzielony skrypt uruchomienia i konfiguracja Docker w katalogu głównym. Komunikacja: frontend wywołuje REST API backendu (JSON, CORS), backend korzysta z PostgreSQL.
 
-- **Stałe w repozytorium:** katalog główny → **`constants.mjs`** (API_PORT_DEFAULT, FRONTEND_PORT_DEFAULT, DB_NAME_DEFAULT, ENV_KEYS, ścieżki `.env`, komendy Docker i testów); backend → **`backend/src/constants.ts`**; frontend → **`frontend/src/constants.ts`** i **`frontend/src/api/index.ts`** (domyślny URL API).
+### Backend (Express)
 
-- **Uruchomienie:** Przy błędzie ENOENT/spawn w terminalu IDE użyj terminala systemowego albo **Docker** (`docker compose up --build` — komenda w `constants.mjs`: DOCKER_START_CMD).
+- **Warstwy:** **Routes** → **Controller** → **Service** → **Repository** → baza (Drizzle ORM). Kontrolery tylko delegują do serwisów; logika biznesowa i obsługa błędów są w serwisach; repozytoria encapsulują dostęp do bazy.
+- **Modułowość:** Domena (np. zgłoszenia) jest wydzielona w `backend/src/modules/tickets`: `routes`, `controllers`, `services`, `repository`, `dbSchema`. Endpointy pod `/api/tickets` (lista, szczegóły, liczniki, zmiana statusu).
+- **Infrastruktura:** Wspólne middleware (request-id, logger HTTP, helmet, cors, parsowanie JSON), centralne handlery błędów (404, 400, walidacja, fallback). Baza i migracje w `backend/src/db`.
 
-- **Baza:** Backend wymaga działającego PostgreSQL i bazy o nazwie z `DB_NAME_DEFAULT` (w `constants.mjs`). W Dockerze baza powstaje automatycznie; lokalnie — `createdb <DB_NAME_DEFAULT>` lub utworzenie bazy ręcznie.
+### Frontend (Vue 3)
 
-- **Porty:** API — `API_PORT_DEFAULT` (3000), frontend — `FRONTEND_PORT_DEFAULT` (5173). W Dockerze frontend łączy się z API pod `http://localhost:3000` (z poziomu przeglądarki).
+- **Warstwy:** **Widoki (views)** używają **store’a (Pinia)** i **composable’ów**; store wywołuje **serwisy modułu**; serwisy korzystają z **repozytoriów** (wywołania HTTP przez wspólny klient `api`). UI budowane z **komponentów współdzielonych** (`shared/`) i **komponentów domenowych** w module (np. `tickets`).
+- **Modułowość:** Funkcjonalność zgłoszeń w `frontend/src/modules/tickets`: `views`, `components` (sekcje i komponenty współdzielone w obrębie modułu), `stores`, `services`, `repositories`, `composables`, `types`, `config`, `utils`. Routing (Vue Router) łączy widoki z adresami.
+- **Współdzielone:** `shared/` zawiera komponenty UI (przyciski, karty, tabela, badge, toast, detail-field), composable’y (np. pomiar wysokości, wirtualny scroll), helpery i stałe. Jeden klient HTTP (`frontend/src/api`) z bazowym URL z konfiguracji.
 
-- **Konfiguracja:** Backend — `backend/.env` (m.in. `DATABASE_URL`, `DB_NAME`, `PORT`; klucze w ENV_KEYS). Frontend — `frontend/.env` (m.in. `VITE_API_URL`). W repozytorium są przykładowe pliki `.env` / `.env.example`.
+### Zasady
 
-- **Testy:** Tylko frontend ma skonfigurowane testy (Vitest). Uruchomienie: w katalogu `frontend` → `npm run test` / `npm run test:run` (TEST_CMD_WATCH, TEST_CMD_RUN w `constants.mjs`).
-
-- **Wdrożenie:** Opis hostingu (Vercel, Render, Neon) — [DEPLOYMENT.md](./DEPLOYMENT.md).
+- **Jedna odpowiedzialność:** Kontroler/route tylko przyjmuje żądanie i zwraca wynik; serwis – logika i walidacja; repozytorium – dostęp do danych. Po stronie frontendu widok nie wywołuje API bezpośrednio, tylko przez store i serwisy.
+- **DRY:** Stałe (porty, nazwy env, ścieżki), typy i helpery w jednym miejscu; komponenty wielokrotnego użytku w `shared/` lub w module.
+- **Prostota:** Brak zbędnych abstrakcji; czytelne nazewnictwo; testy (Vitest) po stronie frontendu przy wybranych composable’ach, helperach i konfiguracji.
 
 ---
 
@@ -208,10 +213,16 @@ Wartości domyślne (porty, nazwa bazy, klucze env, ścieżki, komendy) są zdef
 **Ciekawe rozwiązania w kodzie:**
 
 - **Powrót z detalu po zapisie** – widok szczegółów przy zapisie przekazuje w route `query.updated=id`. Lista nasłuchuje na ten parametr, wywołuje `highlightRow(id)` na DataTable (przez `defineExpose`), po czym czyści query (`router.replace`), bez przeładowania i bez gubienia aktualnej strony dzięki `setStatusFilter(..., { resetPage: false })`.
+
 - **DataTable a podświetlenie wiersza** – każdy wiersz ma `ref` zapisany po kluczu (np. `id`); komponent eksponuje metodę `highlightRow(id)`. Helpery `getElementFromRef` (ref może być komponentem Vue lub `HTMLElement`) i `temporarilyAddClass` – dodanie klasy na 2 s i automatyczne jej usunięcie. Wiersze z `v-memo` dla stabilności przy aktualizacji danych.
+
 - **Wysokość scrollera na mobile** – `useMeasuredHeight` z **ResizeObserver** mierzy rzeczywistą wysokość kontenera; wynik (np. `scrollerHeightPx`) używany jest do ustawienia wysokości Vue Virtual Scroller, żeby zawsze mieściła się stała liczba kart. Na desktopie używana jest stała wartość z konfiguracji.
+
 - **Filtry i paginacja** – `useTicketsFilter` trzyma status i stronę; przy zmianie wywołuje `store.fetchTickets`. Opcja `resetPage: false` przy powrocie z detalu pozwala zostawić bieżącą stronę i tylko podświetlić wiersz.
+
 - **Toasty** – globalny stan (`shallowRef`), każdy toast ma unikalne `id` (`generateId`), auto-ukrywanie po zadanym czasie (timer w `Map`), komponent wyświetlany przez **Teleport** do dedykowanego kontenera.
+
 - **Kompozycja tabeli** – `useDataTable` przyjmuje kolumny, dane, `rowKey`, opcje paginacji i sortowania, zwraca `tableOpts` (computed) przekazywany do DataTable; jedna konfiguracja dla nagłówka, wierszy, pustego stanu i paginacji.
+
 - **Klasy i daty** – helper `cn` (clsx + tailwind-merge) do spójnego łączenia klas; `formatDateTime` (Luxon) z opcjonalnym locale (domyślnie z `navigator.language`) dla spójnego formatu dat w całej aplikacji.
 

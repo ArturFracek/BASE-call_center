@@ -222,7 +222,7 @@ watch(
 
 <style scoped lang="sass">
 .ticket-list-view
-  max-width: 56rem
+  max-width: 64rem
   margin-inline: auto
   padding: 1.5rem 1rem
   display: flex

@@ -161,7 +161,7 @@ const saveStatus = async (): Promise<void> => {
 
 <style scoped lang="sass">
 .ticket-detail-view
-  max-width: 40rem
+  max-width: 52rem
   margin-inline: auto
   padding: 1.5rem 1rem
 
