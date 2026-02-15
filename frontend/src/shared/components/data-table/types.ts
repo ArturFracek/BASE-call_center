@@ -1,6 +1,6 @@
-import type { SortOrder } from "./constants";
+import type { TSortOrder } from "./constants";
 
-export interface DataTableColumnOpts {
+export interface IDataTableColumnOpts {
   key: string;
   header: string;
   sortable?: boolean;
@@ -8,13 +8,13 @@ export interface DataTableColumnOpts {
   cellSlot?: string;
 }
 
-export interface DataTableOpts<T = unknown> {
-  columns: DataTableColumnOpts[];
+export interface IDataTableOpts<T = unknown> {
+  columns: IDataTableColumnOpts[];
   data: T[];
   rowKey?: string;
   selectable?: boolean;
   sortField?: string | null;
-  sortOrder?: SortOrder;
+  sortOrder?: TSortOrder;
   emptyText?: string;
   pagination?: {
     page: number;
@@ -24,7 +24,7 @@ export interface DataTableOpts<T = unknown> {
   };
 }
 
-export interface DataTableSortPayload {
+export interface IDataTableSortPayload {
   field: string;
-  order: SortOrder;
+  order: TSortOrder;
 }

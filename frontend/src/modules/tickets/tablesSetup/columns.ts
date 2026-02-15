@@ -1,6 +1,6 @@
-import type { DataTableColumnOpts } from "@/shared/components/data-table/types";
+import type { IDataTableColumnOpts } from "@/shared/components/data-table/types";
 
-export const TICKET_TABLE_COLUMNS: DataTableColumnOpts[] = [
+export const TICKET_TABLE_COLUMNS: IDataTableColumnOpts[] = [
   { key: "id", header: "tickets.headers.id", sortable: true },
   { key: "customerName", header: "tickets.headers.customerName", sortable: true },
   {

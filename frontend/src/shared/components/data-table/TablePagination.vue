@@ -2,7 +2,7 @@
   <div
     class="table-pagination"
     role="navigation"
-    :aria-label="$t('common.aria.pagination')"
+    :aria-label="t('common.aria.pagination')"
   >
     <p class="table-pagination__info text-sm text-muted-foreground">
       <span v-if="props.activeFilterLabel">{{ props.activeFilterLabel }} · </span>{{ rangeText }}
@@ -12,16 +12,16 @@
         variant="outline"
         size="sm"
         :disabled="!hasPrev"
-        :aria-label="$t('common.aria.prevPage')"
+        :aria-label="t('common.aria.prevPage')"
         class="table-pagination__nav-btn"
         @click="goPrev"
       >
         <ChevronLeft class="size-4" />
-        {{ $t("common.pagination.prev") }}
+        {{ t("common.pagination.prev") }}
       </Button>
       <nav
         class="table-pagination__numbers"
-        :aria-label="$t('common.aria.pagination')"
+        :aria-label="t('common.aria.pagination')"
       >
         <template
           v-for="(item, index) in visiblePageItems"
@@ -35,7 +35,7 @@
               'table-pagination__page-btn',
               item === props.page && 'table-pagination__page-btn--current',
             ]"
-            :aria-label="$t('common.aria.pageNumber', { page: item })"
+            :aria-label="t('common.aria.pageNumber', { page: item })"
             :aria-current="item === props.page ? 'page' : undefined"
             @click="goToPage(item)"
           >
@@ -52,11 +52,11 @@
         variant="outline"
         size="sm"
         :disabled="!hasNext"
-        :aria-label="$t('common.aria.nextPage')"
+        :aria-label="t('common.aria.nextPage')"
         class="table-pagination__nav-btn"
         @click="goNext"
       >
-        {{ $t("common.pagination.next") }}
+        {{ t("common.pagination.next") }}
         <ChevronRight class="size-4" />
       </Button>
     </div>
@@ -70,17 +70,20 @@
 <script setup lang="ts">
 import { ChevronLeft, ChevronRight } from "lucide-vue-next";
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import { Button } from "@/shared/components/ui/button";
 
-type PageItem = number | "ellipsis";
+const { t } = useI18n();
+
+type TPageItem = number | "ellipsis";
 
 /** Zwraca listę numerów stron i wielokropków do wyświetlenia (np. [1, 'ellipsis', 4, 5, 6, 'ellipsis', 10]). */
-function getVisiblePageItems(total: number, current: number): PageItem[] {
+function getVisiblePageItems(total: number, current: number): TPageItem[] {
   const totalPages = Math.max(1, total);
   if (totalPages <= 7) {
     return Array.from({ length: totalPages }, (_, i) => i + 1);
   }
-  const items: PageItem[] = [1];
+  const items: TPageItem[] = [1];
   const showLeftEllipsis = current > 3;
   const showRightEllipsis = current < totalPages - 2;
   const windowStart = Math.max(2, current - 1);
@@ -95,14 +98,14 @@ function getVisiblePageItems(total: number, current: number): PageItem[] {
   return items;
 }
 
-interface Props {
+interface IProps {
   page: number;
   pageSize: number;
   total: number;
   activeFilterLabel?: string;
 }
 
-const props = defineProps<Props>();
+const props = defineProps<IProps>();
 
 const emit = defineEmits<{
   "update:page": [value: number];
@@ -115,19 +118,19 @@ const totalPages = computed(() =>
 const hasPrev = computed(() => props.page > 1);
 const hasNext = computed(() => props.page < totalPages.value);
 
-const visiblePageItems = computed((): PageItem[] =>
+const visiblePageItems = computed((): TPageItem[] =>
   getVisiblePageItems(totalPages.value, props.page)
 );
 
 const rangeText = computed(() => {
-  if (props.total === 0) {
-    return "0";
-  }
-
+  if (props.total === 0) return "0";
   const firstOnPage = (props.page - 1) * props.pageSize + 1;
   const lastOnPage = Math.min(props.page * props.pageSize, props.total);
-
-  return `${firstOnPage}–${lastOnPage} z ${props.total}`;
+  return t("common.pagination.range", {
+    first: firstOnPage,
+    last: lastOnPage,
+    total: props.total,
+  });
 });
 
 const goPrev = (): void => {

@@ -3,7 +3,7 @@ export const SORT_ORDER = {
   DESC: "desc",
 } as const;
 
-export type SortOrder = (typeof SORT_ORDER)[keyof typeof SORT_ORDER];
+export type TSortOrder = (typeof SORT_ORDER)[keyof typeof SORT_ORDER];
 
 export const DATA_TABLE_SORT_I18N = {
   ARIA_ASC: "common.dataTable.sortAsc",

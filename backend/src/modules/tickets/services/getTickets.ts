@@ -3,14 +3,14 @@ import { findCount, findAll } from "../repository/index.js";
 import type { TTicket } from "../types/index.js";
 import { getTicketsQuerySchema } from "../validation/getTicketsQuerySchema.js";
 
-export interface GetTicketsResult {
+export interface IGetTicketsResult {
   data: TTicket[];
   total: number;
 }
 
 export const getTickets = async (
   query: unknown
-): Promise<GetTicketsResult> => {
+): Promise<IGetTicketsResult> => {
   const parsed = getTicketsQuerySchema.safeParse(query);
   if (!parsed.success) {
     throw new ValidationError("Invalid query", parsed.error);

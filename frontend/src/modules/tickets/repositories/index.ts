@@ -2,22 +2,22 @@ export { TICKETS_BASE } from "./base";
 export {
   findCounts,
   findCountsPath,
-  type TCountsByStatus,
+  type ICountsByStatus,
 } from "./findCounts";
 export {
   findAll,
   findAllPath,
-  type FindAllResponse,
+  type IFindAllResponse,
 } from "./findAll";
 export {
   findById,
   findByIdPath,
-  type FindByIdResponse,
+  type TFindByIdResponse,
 } from "./findById";
 export {
   updateStatus,
   updateStatusPath,
-  type UpdateStatusResponse,
+  type TUpdateStatusResponse,
 } from "./updateStatus";
 
 import { findCounts } from "./findCounts";

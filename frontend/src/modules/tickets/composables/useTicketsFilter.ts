@@ -1,10 +1,12 @@
 import { ref, computed, watch } from "vue";
-import { STATUS_FILTER_OPTIONS } from "@/modules/tickets/consts";
+import {
+  STATUS_FILTER_OPTIONS,
+  TICKET_LIST_PAGE_SIZE,
+} from "@/modules/tickets/consts";
 import { useTicketsStore } from "@/modules/tickets/stores/ticketsStore";
 import type { ITicket, TStatusFilter } from "@/modules/tickets/types";
 
 const DEFAULT_FILTER = STATUS_FILTER_OPTIONS.ALL;
-const PAGE_SIZE = 10;
 
 export const useTicketsFilter = () => {
   const store = useTicketsStore();
@@ -35,8 +37,8 @@ export const useTicketsFilter = () => {
           : statusFilter.value;
       store.fetchTickets({
         status,
-        limit: PAGE_SIZE,
-        offset: (page.value - 1) * PAGE_SIZE,
+        limit: TICKET_LIST_PAGE_SIZE,
+        offset: (page.value - 1) * TICKET_LIST_PAGE_SIZE,
       });
     },
     { immediate: true }
@@ -50,7 +52,7 @@ export const useTicketsFilter = () => {
     setStatusFilter,
     page,
     setPage,
-    pageSize: PAGE_SIZE,
+    pageSize: TICKET_LIST_PAGE_SIZE,
     total,
     tickets,
   };

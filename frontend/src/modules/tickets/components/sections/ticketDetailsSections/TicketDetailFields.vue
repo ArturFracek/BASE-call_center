@@ -42,7 +42,7 @@ import { DetailField } from "@/shared/components/detail-field";
 import PriorityBadge from "@/modules/tickets/components/shared/PriorityBadge.vue";
 import type { ITicket } from "@/modules/tickets/types";
 
-export interface TicketDetailFieldItem {
+export interface ITicketDetailFieldItem {
   fieldKey: string;
   labelKey: string;
   label: string;
@@ -51,12 +51,12 @@ export interface TicketDetailFieldItem {
   fullWidth?: boolean;
 }
 
-interface Props {
-  fields: TicketDetailFieldItem[];
+interface IProps {
+  fields: ITicketDetailFieldItem[];
   ticket: ITicket | null;
 }
 
-defineProps<Props>();
+defineProps<IProps>();
 </script>
 
 <style scoped lang="sass">

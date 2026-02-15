@@ -20,16 +20,16 @@
 </template>
 
 <script setup lang="ts">
-import type { ToastType } from '@/composables/useToast'
+import type { TToastType } from '@/composables/useToast'
 import { mergeClasses } from '@/shared/helpers/classNames'
 import { toastVariants } from '.'
 
-interface Props {
-  type: ToastType
+interface IProps {
+  type: TToastType
   message: string
 }
 
-const props = defineProps<Props>()
+const props = defineProps<IProps>()
 
 const emit = defineEmits<{
   close: []

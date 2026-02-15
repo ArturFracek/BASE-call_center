@@ -5,13 +5,13 @@ import en from "@/locales/en.json";
 export const LOCALE_STORAGE_KEY = "app-locale";
 
 const supportedLocales = ["pl", "en"] as const;
-export type SupportedLocale = (typeof supportedLocales)[number];
+export type TSupportedLocale = (typeof supportedLocales)[number];
 
-const getStoredLocale = (): SupportedLocale | null => {
+const getStoredLocale = (): TSupportedLocale | null => {
   if (typeof document === "undefined") return null;
   const stored = localStorage.getItem(LOCALE_STORAGE_KEY);
-  if (stored && supportedLocales.includes(stored as SupportedLocale)) {
-    return stored as SupportedLocale;
+  if (stored && supportedLocales.includes(stored as TSupportedLocale)) {
+    return stored as TSupportedLocale;
   }
   return null;
 };

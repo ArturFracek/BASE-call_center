@@ -86,8 +86,8 @@ import {
   BreadcrumbSeparator,
 } from "@/shared/components/ui/breadcrumb";
 import { displayToast } from "@/composables/useToast";
-import { formatDateTime } from "@/shared/helpers/formatDateTime";
 import { TICKET_STATUSES } from "@/modules/tickets/consts";
+import { TICKET_DETAIL_FIELD_DEFS } from "@/modules/tickets/config/ticketDetailFieldsConfig";
 import {
   TicketDetailFields,
   TicketDetailNotFound,
@@ -103,11 +103,11 @@ import {
   CardTitle,
 } from "@/shared/components/ui/card";
 
-interface Props {
+interface IProps {
   id: string;
 }
 
-const props = defineProps<Props>();
+const props = defineProps<IProps>();
 const { t } = useI18n();
 const store = useTicketsStore();
 const idRef = toRef(props, "id");
@@ -120,51 +120,9 @@ const selectedStatus = ref<TTicketStatus>("new");
 const saving = ref(false);
 const statusOptions = TICKET_STATUSES;
 
-const DETAIL_FIELD_KEYS: Array<{
-  fieldKey: string;
-  labelKey: string;
-  getValue: (t: ITicket, tFn: (key: string) => string) => string;
-  contentClass?: string;
-  fullWidth?: boolean;
-}> = [
-  {
-    fieldKey: "id",
-    labelKey: "tickets.headers.id",
-    getValue: (t) => String(t.id),
-  },
-  {
-    fieldKey: "customerName",
-    labelKey: "tickets.headers.customerName",
-    getValue: (t) => t.customerName,
-  },
-  {
-    fieldKey: "subject",
-    labelKey: "tickets.headers.subject",
-    getValue: (t) => t.subject,
-    fullWidth: true,
-  },
-  {
-    fieldKey: "description",
-    labelKey: "tickets.headers.description",
-    getValue: (t) => t.description,
-    contentClass: "whitespace-pre-wrap",
-    fullWidth: true,
-  },
-  {
-    fieldKey: "priority",
-    labelKey: "tickets.headers.priority",
-    getValue: (t, tFn) => tFn("tickets.priority." + t.priority),
-  },
-  {
-    fieldKey: "createdAt",
-    labelKey: "tickets.headers.createdAt",
-    getValue: (t) => formatDateTime(t.createdAt),
-  },
-];
-
 const detailFields = computed(() => {
   if (!ticket.value) return [];
-  return DETAIL_FIELD_KEYS.map(
+  return TICKET_DETAIL_FIELD_DEFS.map(
     ({ fieldKey, labelKey, getValue, contentClass, fullWidth }) => ({
       fieldKey,
       labelKey,

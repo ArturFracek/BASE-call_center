@@ -1,13 +1,13 @@
 import { displayToast } from "@/composables/useToast";
 import {
   ticketRepository,
-  type FindByIdResponse,
+  type TFindByIdResponse,
 } from "@/modules/tickets/repositories";
 import { getErrorMessage } from "@/shared/helpers/getErrorMessage";
 
 export const findById = async (
   id: number
-): Promise<FindByIdResponse | null> => {
+): Promise<TFindByIdResponse | null> => {
   try {
     const { data } = await ticketRepository.findById(id);
     return data;

@@ -11,6 +11,12 @@ function run(cmd, cwd = rootDir) {
   execSync(cmd, { cwd, stdio: "inherit", shell: true });
 }
 
+function runOptional(cmd, cwd = rootDir) {
+  try {
+    execSync(cmd, { cwd, stdio: "pipe", shell: true });
+  } catch (_) {}
+}
+
 run("npm install", backendDir);
 
 const backendEnv = join(backendDir, ".env");
@@ -18,6 +24,8 @@ const backendEnvExample = join(backendDir, ".env.example");
 if (!existsSync(backendEnv) && existsSync(backendEnvExample)) {
   copyFileSync(backendEnvExample, backendEnv);
 }
+
+runOptional("createdb call_center");
 
 run("npm run db:generate", backendDir);
 run("npm run db:migrate", backendDir);

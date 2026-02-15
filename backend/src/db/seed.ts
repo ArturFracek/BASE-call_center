@@ -3,8 +3,8 @@ import { db } from "./index.js";
 import { tickets } from "../modules/tickets/dbSchema/dbTicketsSchema.js";
 import logger from "../helpers/logger.js";
 
-type TicketPriority = "low" | "medium" | "high";
-type TicketStatus = "new" | "in_progress" | "closed";
+type TTicketPriority = "low" | "medium" | "high";
+type TTicketStatus = "new" | "in_progress" | "closed";
 
 const CUSTOMER_NAMES = [
   "Jan Kowalski",
@@ -75,8 +75,8 @@ const DESCRIPTIONS = [
   "Licencja wygasa za tydzień, proszę o przedłużenie.",
 ];
 
-const PRIORITIES: TicketPriority[] = ["high", "medium", "low"];
-const STATUSES: TicketStatus[] = ["new", "in_progress", "closed"];
+const PRIORITIES: TTicketPriority[] = ["high", "medium", "low"];
+const STATUSES: TTicketStatus[] = ["new", "in_progress", "closed"];
 
 const SEED_COUNT = 100;
 
@@ -84,8 +84,8 @@ function buildSeedTickets(): Array<{
   customerName: string;
   subject: string;
   description: string;
-  priority: TicketPriority;
-  status: TicketStatus;
+  priority: TTicketPriority;
+  status: TTicketStatus;
 }> {
   return Array.from({ length: SEED_COUNT }, (_, i) => ({
     customerName: CUSTOMER_NAMES[i % CUSTOMER_NAMES.length],

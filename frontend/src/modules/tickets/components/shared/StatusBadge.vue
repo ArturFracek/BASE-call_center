@@ -12,11 +12,11 @@ import { computed } from "vue";
 import { Badge } from "@/shared/components/ui/badge";
 import type { TTicketStatus } from "@/modules/tickets/types";
 
-interface Props {
+interface IProps {
   status: TTicketStatus;
 }
 
-const { status } = defineProps<Props>();
+const { status } = defineProps<IProps>();
 
 const badgeClass = computed(() => `status-badge status-badge--${status}`);
 </script>

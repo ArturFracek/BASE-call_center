@@ -25,4 +25,4 @@ export const toastVariants = cva(
   }
 )
 
-export type ToastVariants = VariantProps<typeof toastVariants>
+export type TToastVariants = VariantProps<typeof toastVariants>

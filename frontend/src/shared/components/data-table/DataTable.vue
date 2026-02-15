@@ -85,7 +85,7 @@ import { computed, ref } from "vue";
 import { DATA_TABLE_SORT_I18N, SORT_ORDER } from "./constants";
 import { getElementFromRef, setRefByKey, temporarilyAddClass } from "./domHelpers";
 import { sortRows } from "./sortRows";
-import type { DataTableOpts, DataTableSortPayload } from "./types";
+import type { IDataTableOpts, IDataTableSortPayload } from "./types";
 import {
   Table,
   TableBody,
@@ -99,15 +99,15 @@ import TablePagination from "./TablePagination.vue";
 const HIGHLIGHT_CLASS = "data-table__row--highlight";
 const HIGHLIGHT_DURATION_MS = 2000;
 
-interface Props {
-  opts: DataTableOpts;
+interface IProps {
+  opts: IDataTableOpts;
 }
 
-const props = defineProps<Props>();
+const props = defineProps<IProps>();
 
 const emit = defineEmits<{
   select: [row: unknown];
-  sort: [payload: DataTableSortPayload];
+  sort: [payload: IDataTableSortPayload];
   pageChange: [page: number];
 }>();
 

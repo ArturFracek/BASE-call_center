@@ -10,11 +10,11 @@
 </template>
 
 <script setup lang="ts">
-interface Props {
+interface IProps {
   label: string;
 }
 
-defineProps<Props>();
+defineProps<IProps>();
 </script>
 
 <style scoped lang="sass">

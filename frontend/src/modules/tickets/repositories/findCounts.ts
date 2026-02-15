@@ -1,7 +1,7 @@
 import { api } from "@api";
 import { TICKETS_BASE } from "./base";
 
-export interface TCountsByStatus {
+export interface ICountsByStatus {
   new: number;
   in_progress: number;
   closed: number;
@@ -11,4 +11,4 @@ export interface TCountsByStatus {
 export const findCountsPath = () => `${TICKETS_BASE}/counts`;
 
 export const findCounts = () =>
-  api.get<TCountsByStatus>(findCountsPath());
+  api.get<ICountsByStatus>(findCountsPath());

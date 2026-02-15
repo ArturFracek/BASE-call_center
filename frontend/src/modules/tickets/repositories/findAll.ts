@@ -1,15 +1,15 @@
 import { api } from "@api";
-import type { ITicket, TFindAllTicketsParams } from "@/modules/tickets/types";
+import type { ITicket, IFindAllTicketsParams } from "@/modules/tickets/types";
 import { TICKETS_BASE } from "./base";
 
 export const findAllPath = () => TICKETS_BASE;
 
-export interface FindAllResponse {
+export interface IFindAllResponse {
   data: ITicket[];
   total: number;
 }
 
-export const findAll = (params?: TFindAllTicketsParams) =>
-  api.get<FindAllResponse>(findAllPath(), {
+export const findAll = (params?: IFindAllTicketsParams) =>
+  api.get<IFindAllResponse>(findAllPath(), {
     params: params ?? undefined,
   });

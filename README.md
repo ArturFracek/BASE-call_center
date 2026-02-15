@@ -1,156 +1,82 @@
 # Panel Operatora Call Center
 
-Aplikacja webowa do obsługi zgłoszeń w call center: lista zgłoszeń z filtrowaniem po statusie, szczegóły zgłoszenia oraz zmiana statusu.
+Aplikacja do obsługi zgłoszeń: lista z filtrem, szczegóły, zmiana statusu. Vue 3 + Express + PostgreSQL.
 
-**Stack:** Vue 3 (Composition API), Pinia, Vue Router, Sass, TypeScript | Backend: Express, Drizzle ORM, PostgreSQL, Zod.
+## Jak uruchomić
 
----
+**Wymagane:** Node.js 20+, PostgreSQL (zainstalowany i uruchomiony). Bez PostgreSQL skrypt zatrzyma się na krokach bazy. Instalacja i start: **macOS** `brew install postgresql` i `brew services start postgresql`. **Linux (Ubuntu/Debian)** `sudo apt install postgresql postgresql-contrib` i `sudo systemctl start postgresql`. **Windows** instalator z [postgresql.org](https://www.postgresql.org/download/windows/) lub `choco install postgresql` (Chocolatey); serwis startuje zwykle automatycznie.
 
-## Wymagania
+W katalogu głównym projektu:
 
-- **Node.js** 20+ (zalecane 22+)
-- **PostgreSQL** – działający serwer i baza danych
+```bash
+npm install
+npm run start
+```
 
----
+Co robi Skrypt: instalacja zależności (backend + frontend), **próba utworzenia bazy** (`createdb call_center` – na Windows często brak w PATH, wtedy utwórz bazę ręcznie przed startem), potem `db:generate`, `db:migrate`, `db:push`, `db:seed`, na końcu uruchomienie backendu i frontendu. Pliki `.env` są w repozytorium.
 
-## Uruchomienie w jednej komendzie (dla rekrutera)
+Gdy baza nie powstanie: `createdb call_center`. W razie potrzeby dostosuj **DATABASE_URL** w **backend/.env** (np. `postgres://twoja_nazwa@localhost:5432/call_center`).
 
-Jeśli masz już **PostgreSQL** i utworzona bazę **call_center**:
+**API:** http://localhost:3000 · **Aplikacja:** http://localhost:5173
 
-1. **W katalogu głównym projektu** (tam, gdzie jest ten README):
-   ```bash
-   npm install
-   npm run start
-   ```
-2. Jedna komenda `npm run start` po kolei:
-   - instaluje zależności w backendzie i frontendzie,
-   - kopiuje `backend/.env.example` → `backend/.env` (i opcjonalnie frontend), jeśli brak `.env`,
-   - synchronizuje schemę bazy (`db:push`),
-   - wstawia 100 rekordów testowych (`db:seed`),
-   - uruchamia backend (API) i frontend (Vue) równolegle.
-
-3. **Przed pierwszym uruchomieniem** upewnij się, że:
-   - Baza `call_center` istnieje: `createdb call_center` (lub w `psql`: `CREATE DATABASE call_center;`).
-   - W pliku **backend/.env** jest ustawione **DATABASE_URL**. Na wielu systemach (np. macOS) użytkownik to Twoja nazwa z `whoami`, np. `postgres://twoja_nazwa@localhost:5432/call_center`.
-
-4. Po starcie:
-   - **API:** http://localhost:3000  
-   - **Aplikacja:** http://localhost:5173 (Vite poda adres w terminalu).
+**Wdrożenie (za darmo):** frontend → Vercel, backend → Render, baza → Neon. Instrukcja krok po kroku: [DEPLOYMENT.md](./DEPLOYMENT.md).
 
 ---
 
-## Uruchomienie krok po kroku
+### Uwaga: jeśli `npm run start` nie zadziała – uruchomienie krok po kroku
 
-Projekt składa się z **backendu** (API) i **frontendu** (Vue). Poniżej opis ręcznego uruchomienia, jeśli nie korzystasz z `npm run start`.
+**1. PostgreSQL**  
+Zainstaluj i uruchom serwer PostgreSQL (jeśli jeszcze go nie masz). Bez działającej bazy kolejne kroki się nie powiodą.
 
-### 1. Backend
+**2. Utworzenie bazy danych**  
+W terminalu (gdy masz `createdb` w PATH):
+```bash
+createdb call_center
+```
+Albo po wejściu do konsoli PostgreSQL (`psql`):
+```sql
+CREATE DATABASE call_center;
+```
+Na Windows, jeśli `createdb` nie działa, utwórz bazę w pgAdmin lub przez instalator Postgresa.
 
+**3. Zależności w katalogu głównym**  
+W katalogu głównym projektu (tam, gdzie są foldery `backend` i `frontend`):
+```bash
+npm install
+```
+Zainstaluje m.in. `concurrently` potrzebne do uruchomienia backendu i frontendu.
+
+**4. Backend**  
+W **pierwszym** terminalu:
 ```bash
 cd backend
 npm install
 ```
+Otwórz plik `backend/.env` i upewnij się, że **DATABASE_URL** wskazuje na Twoją bazę, np.:
+```env
+DATABASE_URL=postgres://twoja_nazwa@localhost:5432/call_center
+```
+Na macOS często użytkownik to wynik polecenia `whoami`, nie `postgres`. Z hasłem: `postgres://twoja_nazwa:haslo@localhost:5432/call_center`.
 
-**Konfiguracja**
-
-- Skopiuj plik z przykładowymi zmiennymi:
-  ```bash
-  cp .env.example .env
-  ```
-- W pliku `.env` ustaw **DATABASE_URL** (połączenie z PostgreSQL).
-
-  Domyślny przykład:
-  ```env
-  DATABASE_URL=postgres://postgres@localhost:5432/call_center
-  ```
-  Na wielu systemach (np. macOS z Homebrew) użytkownik bazy to Twoja nazwa użytkownika systemu, nie `postgres`. Sprawdź: `whoami` w terminalu i użyj:
-  ```env
-  DATABASE_URL=postgres://TWOJA_NAZWA@localhost:5432/call_center
-  ```
-  Z hasłem: `postgres://TWOJA_NAZWA:haslo@localhost:5432/call_center`.
-
-**Baza danych**
-
-- Utwórz bazę (jeśli nie istnieje):
-  ```bash
-  createdb call_center
-  ```
-  lub w `psql`: `CREATE DATABASE call_center;`
-
-- Zastosuj schemat i wstaw dane testowe:
-
-  **Opcja A – migracje:**
-  ```bash
-  npm run db:generate
-  npm run db:migrate
-  npm run db:seed
-  ```
-
-  **Opcja B – push (szybka synchronizacja schemy):**
-  ```bash
-  npm run db:push
-  npm run db:seed
-  ```
-
-**Start serwera**
-
+Następnie w tym samym katalogu `backend`:
 ```bash
+npm run db:generate
+npm run db:migrate
+npm run db:push
+npm run db:seed
 npm run dev
 ```
+Serwer API wystartuje (port 3000). **Zostaw ten terminal otwarty.**
 
-API działa pod adresem **http://localhost:3000** (port z `.env`: `PORT=3000`).
-
----
-
-### 2. Frontend
-
-W **nowym** terminalu:
-
+**5. Frontend**  
+Otwórz **drugi** terminal. W katalogu głównym projektu:
 ```bash
 cd frontend
 npm install
-```
-
-**Konfiguracja**
-
-- Skopiuj plik z przykładowymi zmiennymi:
-  ```bash
-  cp .env.example .env
-  ```
-- W `.env` upewnij się, że adres API jest poprawny (domyślnie):
-  ```env
-  VITE_API_URL=http://localhost:3000
-  ```
-
-**Start aplikacji**
-
-```bash
 npm run dev
 ```
+Vite uruchomi aplikację (zazwyczaj port 5173). Zostaw ten terminal otwarty.
 
-Frontend uruchomi się zwykle pod **http://localhost:5173** (Vite poda dokładny adres w terminalu).
+**6. Aplikacja w przeglądarce**  
+Wejdź na adres podany przez Vite w terminalu, zwykle **http://localhost:5173**. Powinna wyświetlić się lista zgłoszeń.
 
----
-
-## Sprawdzenie działania
-
-1. Otwórz w przeglądarce adres frontendu (np. http://localhost:5173).
-2. Powinna wyświetlić się **Lista zgłoszeń** z tabelą/kartami zgłoszeń i filtrem po statusie (Wszystkie / Nowe / W trakcie / Zamknięte).
-3. Kliknij wiersz lub kartę – przejście do **Szczegóły zgłoszenia**.
-4. Zmień status w selectcie i kliknij **Zapisz** – po zapisie nastąpi powrót do listy, a zmieniony wiersz krótko się podświetli.
-
----
-
-## Skrypty (podsumowanie)
-
-| Miejsce   | Skrypt              | Opis                                              |
-|----------|----------------------|---------------------------------------------------|
-| **root** | `npm run start`      | Setup (install, db:push, db:seed) + uruchomienie |
-| **root** | `npm run setup`      | Tylko przygotowanie (install, .env, db:push, seed)|
-| **root** | `npm run dev`        | Uruchomienie backendu i frontendu równolegle      |
-| backend  | `npm run dev`        | Serwer API (watch)                                |
-| backend  | `npm run db:push`    | Synchronizacja schemy z bazą                      |
-| backend  | `npm run db:seed`    | Wstawienie danych testowych                       |
-| frontend | `npm run dev`        | Aplikacja Vue (Vite)                              |
-| frontend | `npm run build`      | Build produkcyjny + type-check                    |
-
-Więcej skryptów backendu (migracje, Drizzle Studio) – patrz `backend/README.md`.

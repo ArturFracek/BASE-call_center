@@ -2,14 +2,14 @@ import { db } from "../../../db/index.js";
 import { tickets } from "../dbSchema/dbTicketsSchema.js";
 import { sql } from "drizzle-orm";
 
-export interface TCountsByStatus {
+export interface ICountsByStatus {
   new: number;
   in_progress: number;
   closed: number;
   all: number;
 }
 
-export const findCountsByStatus = async (): Promise<TCountsByStatus> => {
+export const findCountsByStatus = async (): Promise<ICountsByStatus> => {
   const rows = await db
     .select({
       status: tickets.status,
@@ -18,7 +18,7 @@ export const findCountsByStatus = async (): Promise<TCountsByStatus> => {
     .from(tickets)
     .groupBy(tickets.status);
 
-  const counts: TCountsByStatus = {
+  const counts: ICountsByStatus = {
     new: 0,
     in_progress: 0,
     closed: 0,
@@ -26,7 +26,7 @@ export const findCountsByStatus = async (): Promise<TCountsByStatus> => {
   };
 
   for (const row of rows) {
-    const status = row.status as keyof Omit<TCountsByStatus, "all">;
+    const status = row.status as keyof Omit<ICountsByStatus, "all">;
     if (status in counts) {
       counts[status] = row.count;
     }

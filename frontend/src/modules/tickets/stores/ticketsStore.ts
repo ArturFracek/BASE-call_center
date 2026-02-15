@@ -1,16 +1,15 @@
 import { defineStore } from "pinia";
+import { TICKET_LIST_PAGE_SIZE } from "@/modules/tickets/consts";
 import { ticketsService } from "@/modules/tickets/services";
 import type { ITicket, TTicketStatus } from "@/modules/tickets/types";
-import type { TCountsByStatus } from "@/modules/tickets/repositories";
-
-const DEFAULT_PAGE_SIZE = 10;
+import type { ICountsByStatus } from "@/modules/tickets/repositories";
 
 export interface ITicketsState {
   tickets: ITicket[];
   total: number;
   loading: boolean;
   lastFetchParams: IFetchTicketsParams;
-  countsByStatus: TCountsByStatus | null;
+  countsByStatus: ICountsByStatus | null;
   currentTicket: ITicket | null;
   currentTicketLoading: boolean;
   currentTicketNotFound: boolean;
@@ -27,7 +26,7 @@ export const useTicketsStore = defineStore("tickets", {
     tickets: [],
     total: 0,
     loading: false,
-    lastFetchParams: { limit: DEFAULT_PAGE_SIZE, offset: 0 },
+    lastFetchParams: { limit: TICKET_LIST_PAGE_SIZE, offset: 0 },
     countsByStatus: null,
     currentTicket: null,
     currentTicketLoading: false,
@@ -44,7 +43,7 @@ export const useTicketsStore = defineStore("tickets", {
   actions: {
     async fetchTickets(params?: IFetchTicketsParams): Promise<void> {
       const merged = {
-        limit: DEFAULT_PAGE_SIZE,
+        limit: TICKET_LIST_PAGE_SIZE,
         offset: 0,
         ...this.lastFetchParams,
         ...params,

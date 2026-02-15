@@ -1,28 +1,28 @@
 import { computed, type Ref } from "vue";
-import type { DataTableColumnOpts, DataTableOpts } from "./types";
-import type { SortOrder } from "./constants";
+import type { IDataTableColumnOpts, IDataTableOpts } from "./types";
+import type { TSortOrder } from "./constants";
 
-export interface UseDataTablePagination {
+export interface IUseDataTablePagination {
   page: Ref<number>;
   pageSize: number;
   total: Ref<number>;
   getActiveFilterLabel?: () => string;
 }
 
-export interface UseDataTableDeps<T> {
-  columns: DataTableColumnOpts[];
+export interface IUseDataTableDeps<T> {
+  columns: IDataTableColumnOpts[];
   data: Ref<T[]>;
   rowKey?: string;
   selectable?: boolean;
   sortField: Ref<string | null>;
-  sortOrder: Ref<SortOrder>;
+  sortOrder: Ref<TSortOrder>;
   emptyText?: string;
-  pagination?: UseDataTablePagination;
+  pagination?: IUseDataTablePagination;
 }
 
-export const useDataTable = <T>(deps: UseDataTableDeps<T>) => {
-  const tableOpts = computed<DataTableOpts<T>>(() => {
-    const base: DataTableOpts<T> = {
+export const useDataTable = <T>(deps: IUseDataTableDeps<T>) => {
+  const tableOpts = computed<IDataTableOpts<T>>(() => {
+    const base: IDataTableOpts<T> = {
       columns: deps.columns,
       data: deps.data.value,
       rowKey: deps.rowKey ?? "id",

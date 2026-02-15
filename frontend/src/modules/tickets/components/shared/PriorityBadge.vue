@@ -14,11 +14,11 @@
 <script setup lang="ts">
 import type { TTicketPriority } from "@/modules/tickets/types";
 
-interface Props {
+interface IProps {
   priority: TTicketPriority;
 }
 
-defineProps<Props>();
+defineProps<IProps>();
 </script>
 
 <style scoped lang="sass">

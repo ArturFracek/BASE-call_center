@@ -5,7 +5,8 @@
     "pagination": {
       "prev": "Previous",
       "next": "Next",
-      "pageOf": "Page {page} of {total}"
+      "pageOf": "Page {page} of {total}",
+      "range": "{first}–{last} of {total}"
     },
     "dataTable": {
       "sortAsc": "Ascending",

@@ -29,7 +29,6 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from "vue-router";
 import {
   Card,
   CardContent,
@@ -37,21 +36,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
+import { useTicketNavigation } from "@/modules/tickets/composables/useTicketNavigation";
 import PriorityBadge from "./PriorityBadge.vue";
 import StatusBadge from "./StatusBadge.vue";
 import type { ITicket } from "@/modules/tickets/types";
 
-interface Props {
+interface IProps {
   ticket: ITicket;
 }
 
-const { ticket } = defineProps<Props>();
+const { ticket } = defineProps<IProps>();
+const { goToDetail: goToDetailRoute } = useTicketNavigation();
 
-const router = useRouter();
-
-const goToDetail = (): void => {
-  router.push({ name: "ticket-detail", params: { id: String(ticket.id) } });
-};
+const goToDetail = (): void => goToDetailRoute(ticket);
 </script>
 
 <style scoped lang="sass">

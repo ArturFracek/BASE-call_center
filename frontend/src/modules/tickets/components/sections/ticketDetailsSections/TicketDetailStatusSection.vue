@@ -45,13 +45,13 @@ import {
 } from "@/shared/components/ui/select";
 import type { ITicket, TTicketStatus } from "@/modules/tickets/types";
 
-interface Props {
+interface IProps {
   ticket: ITicket;
   saving: boolean;
   statusOptions: readonly TTicketStatus[];
 }
 
-defineProps<Props>();
+defineProps<IProps>();
 
 const selectedStatus = defineModel<TTicketStatus>({ required: true });
 

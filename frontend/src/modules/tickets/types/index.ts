@@ -18,7 +18,7 @@ export interface ITicket {
   createdAt: string;
 }
 
-export interface TFindAllTicketsParams {
+export interface IFindAllTicketsParams {
   status?: TTicketStatus;
   limit?: number;
   offset?: number;

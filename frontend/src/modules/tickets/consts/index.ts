@@ -1,3 +1,5 @@
+export const TICKET_LIST_PAGE_SIZE = 10;
+
 export const TICKET_STATUSES = ["new", "in_progress", "closed"] as const;
 
 export const TICKET_PRIORITIES = ["low", "medium", "high"] as const;

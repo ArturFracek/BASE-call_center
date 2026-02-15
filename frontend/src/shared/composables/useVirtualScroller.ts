@@ -5,14 +5,14 @@ export const VIRTUAL_SCROLLER_DEFAULTS = {
   buffer: 200,
 } as const;
 
-export interface UseVirtualScrollerOptions {
+export interface IUseVirtualScrollerOptions {
   itemSize?: number;
   visibleCount?: number;
   keyField?: string;
   buffer?: number;
 }
 
-export const useVirtualScroller = (options: UseVirtualScrollerOptions = {}) => {
+export const useVirtualScroller = (options: IUseVirtualScrollerOptions = {}) => {
   const {
     itemSize = VIRTUAL_SCROLLER_DEFAULTS.itemSize,
     visibleCount = VIRTUAL_SCROLLER_DEFAULTS.visibleCount,

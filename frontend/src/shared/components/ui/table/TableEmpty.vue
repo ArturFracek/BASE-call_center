@@ -23,12 +23,12 @@ import { cn } from '@/shared/helpers/classNames'
 import TableCell from "./TableCell.vue"
 import TableRow from "./TableRow.vue"
 
-interface Props {
+interface IProps {
   class?: HTMLAttributes["class"]
   colspan?: number
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<IProps>(), {
   colspan: 1,
 })
 

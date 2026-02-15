@@ -92,6 +92,7 @@ import PriorityBadge from "@/modules/tickets/components/shared/PriorityBadge.vue
 import StatusBadge from "@/modules/tickets/components/shared/StatusBadge.vue";
 import TicketCard from "@/modules/tickets/components/shared/TicketCard.vue";
 import { STATUS_FILTER_OPTIONS } from "@/modules/tickets/consts";
+import { useTicketNavigation } from "@/modules/tickets/composables/useTicketNavigation";
 import { useTicketsFilter } from "@/modules/tickets/composables/useTicketsFilter";
 import { useTicketsStore } from "@/modules/tickets/stores/ticketsStore";
 import { TICKET_TABLE_COLUMNS } from "@/modules/tickets/tablesSetup";
@@ -100,7 +101,7 @@ import {
   DataTable,
   SORT_ORDER,
   useDataTable,
-  type DataTableSortPayload,
+  type IDataTableSortPayload,
 } from "@/shared/components/data-table";
 import { useIsMobile } from "@/composables/useIsMobile";
 import { useVirtualScroller } from "@/shared/composables/useVirtualScroller";
@@ -119,6 +120,7 @@ const {
 const { isMobile } = useIsMobile();
 const router = useRouter();
 const route = useRoute();
+const { goToDetail } = useTicketNavigation();
 const dataTableRef = ref<InstanceType<typeof DataTable> | null>(null);
 
 const virtualScroller = useVirtualScroller({
@@ -126,7 +128,7 @@ const virtualScroller = useVirtualScroller({
 });
 
 const sortField = ref<string | null>(null);
-const sortOrder = ref<DataTableSortPayload["order"]>(SORT_ORDER.ASC);
+const sortOrder = ref<IDataTableSortPayload["order"]>(SORT_ORDER.ASC);
 
 const { tableOpts } = useDataTable<ITicket>({
   columns: TICKET_TABLE_COLUMNS,
@@ -144,13 +146,9 @@ const { tableOpts } = useDataTable<ITicket>({
   },
 });
 
-const handleSort = (payload: DataTableSortPayload): void => {
+const handleSort = (payload: IDataTableSortPayload): void => {
   sortField.value = payload.field;
   sortOrder.value = payload.order;
-};
-
-const goToDetail = (ticket: ITicket): void => {
-  router.push({ name: "ticket-detail", params: { id: String(ticket.id) } });
 };
 
 function getUpdatedTicketIdFromQuery(): string | null {

@@ -11,18 +11,18 @@
 <script setup lang="ts">
 import type { PrimitiveProps } from "reka-ui"
 import type { HTMLAttributes } from "vue"
-import type { BadgeVariants } from "."
+import type { TBadgeVariants } from "."
 import { reactiveOmit } from "@vueuse/core"
 import { Primitive } from "reka-ui"
 import { cn } from '@/shared/helpers/classNames'
 import { badgeVariants } from "."
 
-interface Props extends PrimitiveProps {
-  variant?: BadgeVariants["variant"]
+interface IProps extends PrimitiveProps {
+  variant?: TBadgeVariants["variant"]
   class?: HTMLAttributes["class"]
 }
 
-const props = defineProps<Props>()
+const props = defineProps<IProps>()
 
 const delegatedProps = reactiveOmit(props, "class")
 </script>

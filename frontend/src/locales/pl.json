@@ -5,7 +5,8 @@
     "pagination": {
       "prev": "Poprzednia",
       "next": "Następna",
-      "pageOf": "Strona {page} z {total}"
+      "pageOf": "Strona {page} z {total}",
+      "range": "{first}–{last} z {total}"
     },
     "dataTable": {
       "sortAsc": "Rosnąco",

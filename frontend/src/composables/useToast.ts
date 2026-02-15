@@ -1,26 +1,26 @@
 import { generateId } from "@/shared/helpers/generateId";
 import { shallowRef, type ShallowRef } from "vue";
 
-export type ToastKind = "error" | "info" | "success";
+export type TToastKind = "error" | "info" | "success";
 
-export type ToastType = "default" | "success" | "destructive";
+export type TToastType = "default" | "success" | "destructive";
 
-export interface ToastItem {
+export interface IToastItem {
   id: string;
-  type: ToastType;
+  type: TToastType;
   message: string;
   duration: number;
 }
 
 const DEFAULT_DURATION = 5000;
 
-const KIND_TO_VARIANT: Record<ToastKind, ToastType> = {
+const KIND_TO_VARIANT: Record<TToastKind, TToastType> = {
   error: "destructive",
   info: "default",
   success: "success",
 };
 
-const toasts: ShallowRef<ToastItem[]> = shallowRef([]);
+const toasts: ShallowRef<IToastItem[]> = shallowRef([]);
 const timers = new Map<string, ReturnType<typeof setTimeout>>();
 
 const removeToast = (id: string): void => {
@@ -33,7 +33,7 @@ const removeToast = (id: string): void => {
 };
 
 const addToast = (
-  type: ToastType,
+  type: TToastType,
   message: string,
   duration: number = DEFAULT_DURATION
 ): void => {
@@ -46,7 +46,7 @@ const addToast = (
 };
 
 export const displayToast = (
-  type: ToastKind,
+  type: TToastKind,
   message: string,
   duration: number = DEFAULT_DURATION
 ): void => {
