@@ -1,0 +1,8 @@
+// Status badge colors (tickets) – używane w StatusBadge i wszędzie tam,
+// gdzie potrzebna jest spójna paleta statusów (np. w SCSS z zagnieżdżeniem).
+$status-new: #2563eb;
+$status-in-progress: #ea580c;
+$status-closed: #16a34a;
+
+// Breakpoint dla widoku mobilnego (table → karty).
+$breakpoint-mobile: 768px;
