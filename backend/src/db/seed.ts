@@ -76,9 +76,9 @@ const seedTickets = [
   },
 ];
 
-async function seed() {
+const seed = async () => {
   await db.insert(tickets).values(seedTickets);
-}
+};
 
 logger.info("Starting seed...");
 seed()

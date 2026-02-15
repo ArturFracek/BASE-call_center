@@ -3,15 +3,14 @@ import { ticketsController } from "../controllers/index.js";
 
 const router = Router();
 
-function asyncHandler(
+const asyncHandler = (
   fn: (req: Request, res: Response, next: NextFunction) => Promise<void>
-) {
-  return (req: Request, res: Response, next: NextFunction) => {
-    Promise.resolve(fn(req, res, next)).catch(next);
-  };
-}
+) => (req: Request, res: Response, next: NextFunction) => {
+  Promise.resolve(fn(req, res, next)).catch(next);
+};
 
 router.get("/", asyncHandler(ticketsController.getTickets));
+router.get("/counts", asyncHandler(ticketsController.getTicketCounts));
 router.get("/:id", asyncHandler(ticketsController.getTicketById));
 router.patch("/:id", asyncHandler(ticketsController.patchTicket));
 

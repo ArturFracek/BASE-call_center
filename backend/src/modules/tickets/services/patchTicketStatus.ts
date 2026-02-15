@@ -4,10 +4,10 @@ import { updateStatus } from "../repository/index.js";
 import type { TTicket } from "../types/index.js";
 import { patchTicketBodySchema } from "../validation/patchTicketSchema.js";
 
-export async function patchTicketStatus(
+export const patchTicketStatus = async (
   idParam: string | string[] | undefined,
   body: unknown
-): Promise<TTicket> {
+): Promise<TTicket> => {
   const id = parseTicketId(idParam);
   const parsed = patchTicketBodySchema.safeParse(body);
   if (!parsed.success) {
@@ -19,4 +19,4 @@ export async function patchTicketStatus(
     throw new NotFoundError("Ticket not found", "Ticket");
   }
   return ticket;
-}
+};
