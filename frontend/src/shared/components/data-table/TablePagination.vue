@@ -41,13 +41,9 @@ import { computed } from "vue";
 import { Button } from "@/shared/components/ui/button";
 
 interface Props {
-  /** Aktualna strona (1-based). */
   page: number;
-  /** Liczba elementów na stronę. */
   pageSize: number;
-  /** Łączna liczba elementów. */
   total: number;
-  /** Opcjonalna etykieta aktywnego filtra (np. "Nowe") – wyświetlana obok "1–8 z 8". */
   activeFilterLabel?: string;
 }
 
@@ -65,19 +61,23 @@ const hasPrev = computed(() => props.page > 1);
 const hasNext = computed(() => props.page < totalPages.value);
 
 const rangeText = computed(() => {
-  if (props.total === 0) return "0";
-  const from = (props.page - 1) * props.pageSize + 1;
-  const to = Math.min(props.page * props.pageSize, props.total);
-  return `${from}–${to} z ${props.total}`;
+  if (props.total === 0) {
+    return "0";
+  }
+
+  const firstOnPage = (props.page - 1) * props.pageSize + 1;
+  const lastOnPage = Math.min(props.page * props.pageSize, props.total);
+
+  return `${firstOnPage}–${lastOnPage} z ${props.total}`;
 });
 
-function goPrev(): void {
+const goPrev = (): void => {
   if (hasPrev.value) emit("update:page", props.page - 1);
-}
+};
 
-function goNext(): void {
+const goNext = (): void => {
   if (hasNext.value) emit("update:page", props.page + 1);
-}
+};
 </script>
 
 <style scoped lang="sass">

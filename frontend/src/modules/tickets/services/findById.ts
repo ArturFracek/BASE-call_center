@@ -5,7 +5,9 @@ import {
 } from "@/modules/tickets/repositories";
 import { getErrorMessage } from "@/shared/helpers/getErrorMessage";
 
-export async function findById(id: number): Promise<FindByIdResponse | null> {
+export const findById = async (
+  id: number
+): Promise<FindByIdResponse | null> => {
   try {
     const { data } = await ticketRepository.findById(id);
     return data;
@@ -13,4 +15,4 @@ export async function findById(id: number): Promise<FindByIdResponse | null> {
     displayToast("error", getErrorMessage(err, "tickets.messages.fetchError"));
     return null;
   }
-}
+};

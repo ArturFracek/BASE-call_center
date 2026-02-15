@@ -50,9 +50,9 @@ const { ticket } = defineProps<Props>();
 
 const router = useRouter();
 
-function goToDetail(): void {
+const goToDetail = (): void => {
   router.push({ name: "ticket-detail", params: { id: String(ticket.id) } });
-}
+};
 </script>
 
 <style scoped lang="sass">

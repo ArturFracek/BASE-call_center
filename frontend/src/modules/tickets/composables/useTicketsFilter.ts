@@ -6,7 +6,7 @@ import type { ITicket, TStatusFilter } from "@/modules/tickets/types";
 const DEFAULT_FILTER = STATUS_FILTER_OPTIONS.ALL;
 const PAGE_SIZE = 10;
 
-export function useTicketsFilter() {
+export const useTicketsFilter = () => {
   const store = useTicketsStore();
 
   const statusFilter = ref<TStatusFilter>(DEFAULT_FILTER);
@@ -49,4 +49,4 @@ export function useTicketsFilter() {
     total,
     tickets,
   };
-}
+};

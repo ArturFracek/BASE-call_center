@@ -44,7 +44,9 @@
       "fetchError": "Failed to fetch tickets",
       "updateError": "Failed to update status",
       "loading": "Loading…",
-      "emptyList": "No tickets."
+      "emptyList": "No tickets.",
+      "notFound": "Ticket not found.",
+      "updateSuccess": "Ticket status has been updated."
     }
   }
 }

@@ -44,7 +44,9 @@
       "fetchError": "Nie udało się pobrać zgłoszeń",
       "updateError": "Nie udało się zaktualizować statusu",
       "loading": "Ładowanie…",
-      "emptyList": "Brak zgłoszeń."
+      "emptyList": "Brak zgłoszeń.",
+      "notFound": "Nie znaleziono zgłoszenia.",
+      "updateSuccess": "Status zgłoszenia został zaktualizowany."
     }
   }
 }

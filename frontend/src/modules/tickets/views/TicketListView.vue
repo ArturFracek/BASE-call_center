@@ -110,14 +110,17 @@ const tableOpts = computed<DataTableOpts<ITicket>>(() => ({
   }),
 }));
 
-function handleSort(payload: { field: string; order: "asc" | "desc" }): void {
+const handleSort = (payload: {
+  field: string;
+  order: "asc" | "desc";
+}): void => {
   sortField.value = payload.field;
   sortOrder.value = payload.order;
-}
+};
 
-function goToDetail(ticket: ITicket): void {
+const goToDetail = (ticket: ITicket): void => {
   router.push({ name: "ticket-detail", params: { id: String(ticket.id) } });
-}
+};
 </script>
 
 <style scoped lang="sass">

@@ -9,8 +9,7 @@ export interface FindAllResponse {
   total: number;
 }
 
-export function findAll(params?: TFindAllTicketsParams) {
-  return api.get<FindAllResponse>(findAllPath(), {
+export const findAll = (params?: TFindAllTicketsParams) =>
+  api.get<FindAllResponse>(findAllPath(), {
     params: params ?? undefined,
   });
-}

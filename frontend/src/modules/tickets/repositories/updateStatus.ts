@@ -5,6 +5,5 @@ import { TICKETS_BASE } from "./base";
 export const updateStatusPath = (id: number) => `${TICKETS_BASE}/${id}`;
 export type UpdateStatusResponse = ITicket;
 
-export function updateStatus(id: number, status: TTicketStatus) {
-  return api.patch<UpdateStatusResponse>(updateStatusPath(id), { status });
-}
+export const updateStatus = (id: number, status: TTicketStatus) =>
+  api.patch<UpdateStatusResponse>(updateStatusPath(id), { status });

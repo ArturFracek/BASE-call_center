@@ -8,8 +8,10 @@ export interface ITicketsState {
   tickets: ITicket[];
   total: number;
   loading: boolean;
-  /** Ostatnie parametry fetch (do ponownego żądania np. po update statusu). */
   lastFetchParams: IFetchTicketsParams;
+  currentTicket: ITicket | null;
+  currentTicketLoading: boolean;
+  currentTicketNotFound: boolean;
 }
 
 export interface IFetchTicketsParams {
@@ -24,10 +26,13 @@ export const useTicketsStore = defineStore("tickets", {
     total: 0,
     loading: false,
     lastFetchParams: { limit: DEFAULT_PAGE_SIZE, offset: 0 },
+    
+    currentTicket: null,
+    currentTicketLoading: false,
+    currentTicketNotFound: false,
   }),
 
   getters: {
-    /** Lista zgłoszeń po ostatnim fetchTickets – filtrowanie po stronie backendu (param status). */
     getFilteredTickets(state): ITicket[] {
       return state.tickets;
     },
@@ -62,6 +67,29 @@ export const useTicketsStore = defineStore("tickets", {
     ): Promise<void> {
       await ticketsService.updateStatus(id, status);
       await this.fetchTickets();
+    },
+
+    async fetchTicketById(id: number): Promise<void> {
+      if (!Number.isInteger(id) || id < 1) {
+        this.currentTicketNotFound = true;
+        this.currentTicketLoading = false;
+        this.currentTicket = null;
+        return;
+      }
+
+      this.currentTicketLoading = true;
+      this.currentTicketNotFound = false;
+      this.currentTicket = null;
+
+      const data = await ticketsService.findById(id);
+      this.currentTicketLoading = false;
+
+      if (!data) {
+        this.currentTicketNotFound = true;
+        return;
+      }
+
+      this.currentTicket = data;
     },
   },
 });

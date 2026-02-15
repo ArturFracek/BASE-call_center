@@ -6,9 +6,9 @@ import {
 import type { TFindAllTicketsParams } from "@/modules/tickets/types";
 import { getErrorMessage } from "@/shared/helpers/getErrorMessage";
 
-export async function findAll(
+export const findAll = async (
   params?: TFindAllTicketsParams
-): Promise<FindAllResponse> {
+): Promise<FindAllResponse> => {
   try {
     const { data: response } = await ticketRepository.findAll(params);
     return response;
@@ -16,4 +16,4 @@ export async function findAll(
     displayToast("error", getErrorMessage(err, "tickets.messages.fetchError"));
     throw err;
   }
-}
+};

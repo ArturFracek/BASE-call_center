@@ -35,7 +35,7 @@ const emit = defineEmits<{
   close: []
 }>()
 
-function onClose(): void {
-  emit('close')
-}
+const onClose = (): void => {
+  emit("close");
+};
 </script>

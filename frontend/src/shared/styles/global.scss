@@ -1,7 +1,5 @@
 @use 'variables' as *;
 
-// Ekspozycja kolorów statusów i breakpointu jako CSS custom properties,
-// żeby komponenty (np. StatusBadge) i Tailwind mogły z nich korzystać.
 :root {
   --status-new: #{$status-new};
   --status-in-progress: #{$status-in-progress};

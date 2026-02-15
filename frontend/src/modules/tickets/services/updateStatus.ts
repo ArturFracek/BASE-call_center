@@ -6,10 +6,10 @@ import {
 import type { TTicketStatus } from "@/modules/tickets/types";
 import { getErrorMessage } from "@/shared/helpers/getErrorMessage";
 
-export async function updateStatus(
+export const updateStatus = async (
   id: number,
   status: TTicketStatus
-): Promise<UpdateStatusResponse> {
+): Promise<UpdateStatusResponse> => {
   try {
     const { data } = await ticketRepository.updateStatus(id, status);
     return data;
@@ -17,4 +17,4 @@ export async function updateStatus(
     displayToast("error", getErrorMessage(err, "tickets.messages.updateError"));
     throw err;
   }
-}
+};

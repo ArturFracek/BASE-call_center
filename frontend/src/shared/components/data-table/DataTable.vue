@@ -108,27 +108,25 @@ const emit = defineEmits<{
 const sortField = computed(() => props.opts.sortField ?? null);
 const sortOrder = computed(() => props.opts.sortOrder ?? "asc");
 
-/** Dane wyświetlane w tabeli – wewnętrznie sortowane według sortField/sortOrder. */
 const sortedData = computed(() =>
   sortRows(props.opts.data, sortField.value, sortOrder.value)
 );
 
-function getRowKey(row: unknown, index: number): string | number {
+const getRowKey = (row: unknown, index: number): string | number => {
   const key = props.opts.rowKey ?? "id";
   const r = row as Record<string, unknown>;
   const value = r[key];
   return value != null ? String(value) : index;
-}
+};
 
-function getCellValue(row: unknown, key: string): unknown {
-  return (row as Record<string, unknown>)[key];
-}
+const getCellValue = (row: unknown, key: string): unknown =>
+  (row as Record<string, unknown>)[key];
 
-function handleSort(field: string): void {
+const handleSort = (field: string): void => {
   const nextOrder =
     sortField.value === field && sortOrder.value === "asc" ? "desc" : "asc";
   emit("sort", { field, order: nextOrder });
-}
+};
 </script>
 
 <style scoped lang="sass">
