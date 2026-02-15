@@ -12,9 +12,14 @@ export const useTicketsFilter = () => {
   const statusFilter = ref<TStatusFilter>(DEFAULT_FILTER);
   const page = ref(1);
 
-  const setStatusFilter = (value: TStatusFilter): void => {
+  const setStatusFilter = (
+    value: TStatusFilter,
+    options?: { resetPage?: boolean }
+  ): void => {
     statusFilter.value = value;
-    page.value = 1;
+    if (options?.resetPage !== false) {
+      page.value = 1;
+    }
   };
 
   const setPage = (value: number): void => {

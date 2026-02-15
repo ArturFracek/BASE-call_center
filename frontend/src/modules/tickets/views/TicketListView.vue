@@ -79,6 +79,7 @@ import FilterBar from "@/modules/tickets/components/shared/FilterBar.vue";
 import PriorityBadge from "@/modules/tickets/components/shared/PriorityBadge.vue";
 import StatusBadge from "@/modules/tickets/components/shared/StatusBadge.vue";
 import TicketCard from "@/modules/tickets/components/shared/TicketCard.vue";
+import { STATUS_FILTER_OPTIONS } from "@/modules/tickets/consts";
 import { useTicketsFilter } from "@/modules/tickets/composables/useTicketsFilter";
 import { useTicketsStore } from "@/modules/tickets/stores/ticketsStore";
 import { TICKET_TABLE_COLUMNS } from "@/modules/tickets/tablesSetup";
@@ -96,6 +97,7 @@ const store = useTicketsStore();
 const { t } = useI18n();
 const {
   statusFilter,
+  setStatusFilter,
   tickets,
   page,
   setPage,
@@ -104,6 +106,9 @@ const {
 } = useTicketsFilter();
 const { isMobile } = useIsMobile();
 const router = useRouter();
+const route = useRoute();
+const dataTableRef = ref<InstanceType<typeof DataTable> | null>(null);
+
 const virtualScroller = useVirtualScroller({
   visibleCount: 5,
 });
@@ -135,6 +140,28 @@ const handleSort = (payload: DataTableSortPayload): void => {
 const goToDetail = (ticket: ITicket): void => {
   router.push({ name: "ticket-detail", params: { id: String(ticket.id) } });
 };
+
+function getUpdatedTicketIdFromQuery(): string | null {
+  const raw = route.query.updated;
+  return typeof raw === "string" && raw.length > 0 ? raw : null;
+}
+
+function applyReturnFromDetailAfterSave(ticketId: string): void {
+  setStatusFilter(STATUS_FILTER_OPTIONS.ALL, { resetPage: false });
+  nextTick(() => {
+    dataTableRef.value?.highlightRow(ticketId);
+    router.replace({ name: "tickets" });
+  });
+}
+
+watch(
+  () => [getUpdatedTicketIdFromQuery(), tickets.value] as const,
+  ([updatedId, currentTickets]) => {
+    if (updatedId == null || !currentTickets?.length) return;
+    applyReturnFromDetailAfterSave(updatedId);
+  },
+  { immediate: true }
+);
 </script>
 
 <style scoped lang="sass">

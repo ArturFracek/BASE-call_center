@@ -46,6 +46,7 @@
           v-for="(row, index) in sortedData"
           :key="getRowKey(row, index)"
           v-memo="[getRowKey(row, index), row]"
+          :ref="(el) => setRowRef(el, getRowKey(row, index))"
           :class="[
             'data-table__row',
             props.opts.selectable && 'cursor-pointer hover:bg-muted/50',
@@ -80,8 +81,9 @@
 
 <script setup lang="ts">
 import { ChevronDown, ChevronUp } from "lucide-vue-next";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { DATA_TABLE_SORT_I18N, SORT_ORDER } from "./constants";
+import { getElementFromRef, setRefByKey, temporarilyAddClass } from "./domHelpers";
 import { sortRows } from "./sortRows";
 import type { DataTableOpts, DataTableSortPayload } from "./types";
 import {
@@ -94,6 +96,9 @@ import {
 } from "@/shared/components/ui/table";
 import TablePagination from "./TablePagination.vue";
 
+const HIGHLIGHT_CLASS = "data-table__row--highlight";
+const HIGHLIGHT_DURATION_MS = 2000;
+
 interface Props {
   opts: DataTableOpts;
 }
@@ -101,10 +106,15 @@ interface Props {
 const props = defineProps<Props>();
 
 const emit = defineEmits<{
-  select: [row: unknown]
-  sort: [payload: DataTableSortPayload]
-  pageChange: [page: number]
-}>()
+  select: [row: unknown];
+  sort: [payload: DataTableSortPayload];
+  pageChange: [page: number];
+}>();
+
+const rowRefs = ref<Record<string, unknown>>({});
+
+const setRowRef = (el: unknown, key: string | number): void =>
+  setRefByKey(rowRefs.value, key, el);
 
 const sortField = computed(() => props.opts.sortField ?? null);
 const sortOrder = computed(() => props.opts.sortOrder ?? SORT_ORDER.ASC);
@@ -130,6 +140,15 @@ const handleSort = (field: string): void => {
       : SORT_ORDER.ASC;
   emit("sort", { field, order: nextOrder });
 };
+
+const highlightRow = (id: string | number): void => {
+  const el = getElementFromRef(rowRefs.value[String(id)]);
+  if (el) temporarilyAddClass(el, HIGHLIGHT_CLASS, HIGHLIGHT_DURATION_MS);
+};
+
+defineExpose({
+  highlightRow,
+});
 </script>
 
 <style scoped lang="sass">
@@ -168,7 +187,7 @@ const handleSort = (field: string): void => {
 
   &__row
     border-bottom: 1px solid var(--border)
-    transition: background-color 0.15s ease
+    transition: background-color 0.2s ease
     &:last-child
       border-bottom: none
 </style>
@@ -185,4 +204,13 @@ const handleSort = (field: string): void => {
   font-size: 0.8125rem
   text-transform: uppercase
   letter-spacing: 0.025em
+
+.data-table__row--highlight
+  animation: data-table-row-highlight 0.5s ease-out 2
+
+@keyframes data-table-row-highlight
+  0%, 100%
+    background-color: transparent
+  50%
+    background-color: color-mix(in oklch, var(--primary) 18%, transparent)
 </style>
