@@ -22,9 +22,7 @@
       </p>
       <div class="flex flex-wrap items-center gap-2">
         <StatusBadge :status="ticket.status" />
-        <span class="text-sm text-muted-foreground">
-          {{ $t("tickets.headers.priority") }}: {{ $t("tickets.priority." + ticket.priority) }}
-        </span>
+        <PriorityBadge :priority="ticket.priority" />
       </div>
     </CardContent>
   </Card>
@@ -39,6 +37,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
+import PriorityBadge from "./PriorityBadge.vue";
 import StatusBadge from "./StatusBadge.vue";
 import type { ITicket } from "@/modules/tickets/types";
 

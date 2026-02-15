@@ -7,7 +7,7 @@
     <span class="flex-1 font-medium">{{ props.message }}</span>
     <button
       type="button"
-      aria-label="Zamknij"
+      :aria-label="$t('common.aria.close')"
       class="shrink-0 rounded-md p-1 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
       @click="onClose"
     >

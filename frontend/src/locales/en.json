@@ -6,6 +6,18 @@
       "prev": "Previous",
       "next": "Next",
       "pageOf": "Page {page} of {total}"
+    },
+    "dataTable": {
+      "sortAsc": "Ascending",
+      "sortDesc": "Descending",
+      "sort": "Sort"
+    },
+    "aria": {
+      "pagination": "Table pagination",
+      "prevPage": "Previous page",
+      "nextPage": "Next page",
+      "close": "Close",
+      "notifications": "Notifications"
     }
   },
   "tickets": {
@@ -39,6 +51,10 @@
     "buttons": {
       "save": "Save",
       "backToList": "Back to list"
+    },
+    "aria": {
+      "editStatus": "Edit status",
+      "statusSelect": "Ticket status"
     },
     "messages": {
       "fetchError": "Failed to fetch tickets",

@@ -2,7 +2,7 @@
   <div
     class="table-pagination"
     role="navigation"
-    aria-label="Paginacja tabeli"
+    :aria-label="$t('common.aria.pagination')"
   >
     <p class="table-pagination__info text-sm text-muted-foreground">
       <span v-if="props.activeFilterLabel">{{ props.activeFilterLabel }} · </span>{{ rangeText }}
@@ -15,7 +15,7 @@
         variant="outline"
         size="sm"
         :disabled="!hasPrev"
-        aria-label="Poprzednia strona"
+        :aria-label="$t('common.aria.prevPage')"
         @click="goPrev"
       >
         <ChevronLeft class="size-4" />
@@ -25,7 +25,7 @@
         variant="outline"
         size="sm"
         :disabled="!hasNext"
-        aria-label="Następna strona"
+        :aria-label="$t('common.aria.nextPage')"
         @click="goNext"
       >
         {{ $t("common.pagination.next") }}

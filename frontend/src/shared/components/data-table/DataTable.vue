@@ -13,14 +13,14 @@
             <span
               v-if="col.sortable"
               class="data-table__sort-icon"
-              :aria-label="sortField === col.key ? (sortOrder === 'asc' ? 'Rosnąco' : 'Malejąco') : 'Sortuj'"
+              :aria-label="sortField === col.key ? (sortOrder === SORT_ORDER.ASC ? $t(DATA_TABLE_SORT_I18N.ARIA_ASC) : $t(DATA_TABLE_SORT_I18N.ARIA_DESC)) : $t(DATA_TABLE_SORT_I18N.ARIA_NEUTRAL)"
             >
               <ChevronUp
-                v-if="sortField === col.key && sortOrder === 'asc'"
+                v-if="sortField === col.key && sortOrder === SORT_ORDER.ASC"
                 class="data-table__sort-chevron"
               />
               <ChevronDown
-                v-else-if="sortField === col.key && sortOrder === 'desc'"
+                v-else-if="sortField === col.key && sortOrder === SORT_ORDER.DESC"
                 class="data-table__sort-chevron"
               />
               <ChevronUp
@@ -81,8 +81,9 @@
 <script setup lang="ts">
 import { ChevronDown, ChevronUp } from "lucide-vue-next";
 import { computed } from "vue";
+import { DATA_TABLE_SORT_I18N, SORT_ORDER } from "./constants";
 import { sortRows } from "./sortRows";
-import type { DataTableOpts } from "./types";
+import type { DataTableOpts, DataTableSortPayload } from "./types";
 import {
   Table,
   TableBody,
@@ -101,12 +102,12 @@ const props = defineProps<Props>();
 
 const emit = defineEmits<{
   select: [row: unknown]
-  sort: [payload: { field: string; order: "asc" | "desc" }]
+  sort: [payload: DataTableSortPayload]
   pageChange: [page: number]
 }>()
 
 const sortField = computed(() => props.opts.sortField ?? null);
-const sortOrder = computed(() => props.opts.sortOrder ?? "asc");
+const sortOrder = computed(() => props.opts.sortOrder ?? SORT_ORDER.ASC);
 
 const sortedData = computed(() =>
   sortRows(props.opts.data, sortField.value, sortOrder.value)
@@ -124,7 +125,9 @@ const getCellValue = (row: unknown, key: string): unknown =>
 
 const handleSort = (field: string): void => {
   const nextOrder =
-    sortField.value === field && sortOrder.value === "asc" ? "desc" : "asc";
+    sortField.value === field && sortOrder.value === SORT_ORDER.ASC
+      ? SORT_ORDER.DESC
+      : SORT_ORDER.ASC;
   emit("sort", { field, order: nextOrder });
 };
 </script>

@@ -62,7 +62,12 @@ import TicketCard from "@/modules/tickets/components/TicketCard.vue";
 import { useTicketsFilter } from "@/modules/tickets/composables/useTicketsFilter";
 import { useTicketsStore } from "@/modules/tickets/stores/ticketsStore";
 import type { ITicket } from "@/modules/tickets/types";
-import { DataTable, type DataTableOpts } from "@/shared/components/data-table";
+import {
+  DataTable,
+  SORT_ORDER,
+  type DataTableOpts,
+  type DataTableSortPayload,
+} from "@/shared/components/data-table";
 import { useIsMobile } from "@/composables/useIsMobile";
 
 const { t } = useI18n();
@@ -79,7 +84,7 @@ const { isMobile } = useIsMobile();
 const router = useRouter();
 
 const sortField = ref<string | null>(null);
-const sortOrder = ref<"asc" | "desc">("asc");
+const sortOrder = ref<DataTableSortPayload["order"]>(SORT_ORDER.ASC);
 
 const tableOpts = computed<DataTableOpts<ITicket>>(() => ({
   columns: [
@@ -110,10 +115,7 @@ const tableOpts = computed<DataTableOpts<ITicket>>(() => ({
   }),
 }));
 
-const handleSort = (payload: {
-  field: string;
-  order: "asc" | "desc";
-}): void => {
+const handleSort = (payload: DataTableSortPayload): void => {
   sortField.value = payload.field;
   sortOrder.value = payload.order;
 };

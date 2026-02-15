@@ -1,3 +1,5 @@
+import type { SortOrder } from "./constants";
+
 export interface DataTableColumnOpts {
   key: string;
   header: string;
@@ -12,7 +14,7 @@ export interface DataTableOpts<T = unknown> {
   rowKey?: string;
   selectable?: boolean;
   sortField?: string | null;
-  sortOrder?: "asc" | "desc";
+  sortOrder?: SortOrder;
   emptyText?: string;
   pagination?: {
     page: number;
@@ -22,4 +24,7 @@ export interface DataTableOpts<T = unknown> {
   };
 }
 
-export type DataTableSortPayload = { field: string; order: "asc" | "desc" };
+export interface DataTableSortPayload {
+  field: string;
+  order: SortOrder;
+}

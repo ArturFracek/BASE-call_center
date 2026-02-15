@@ -4,5 +4,8 @@
   --status-new: #{$status-new};
   --status-in-progress: #{$status-in-progress};
   --status-closed: #{$status-closed};
+  --priority-low: #{$priority-low};
+  --priority-medium: #{$priority-medium};
+  --priority-high: #{$priority-high};
   --breakpoint-mobile: #{$breakpoint-mobile};
 }

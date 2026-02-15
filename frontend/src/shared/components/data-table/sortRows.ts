@@ -1,3 +1,5 @@
+import { SORT_ORDER, type SortOrder } from "./constants";
+
 const compareTwo = (a: unknown, b: unknown): number => {
   const aEmpty = a == null;
   const bEmpty = b == null;
@@ -15,13 +17,13 @@ const compareTwo = (a: unknown, b: unknown): number => {
 export const sortRows = <T>(
   rows: T[],
   field: string | null | undefined,
-  order: "asc" | "desc"
+  order: SortOrder
 ): T[] => {
   if (!field) {
     return rows;
   }
 
-  const direction = order === "asc" ? 1 : -1;
+  const direction = order === SORT_ORDER.ASC ? 1 : -1;
   const copy = [...rows];
 
   copy.sort((rowA, rowB) => {

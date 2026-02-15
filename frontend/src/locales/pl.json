@@ -6,6 +6,18 @@
       "prev": "Poprzednia",
       "next": "Następna",
       "pageOf": "Strona {page} z {total}"
+    },
+    "dataTable": {
+      "sortAsc": "Rosnąco",
+      "sortDesc": "Malejąco",
+      "sort": "Sortuj"
+    },
+    "aria": {
+      "pagination": "Paginacja tabeli",
+      "prevPage": "Poprzednia strona",
+      "nextPage": "Następna strona",
+      "close": "Zamknij",
+      "notifications": "Powiadomienia"
     }
   },
   "tickets": {
@@ -39,6 +51,10 @@
     "buttons": {
       "save": "Zapisz",
       "backToList": "Powrót do listy"
+    },
+    "aria": {
+      "editStatus": "Edycja statusu",
+      "statusSelect": "Status zgłoszenia"
     },
     "messages": {
       "fetchError": "Nie udało się pobrać zgłoszeń",
