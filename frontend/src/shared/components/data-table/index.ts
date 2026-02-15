@@ -7,3 +7,8 @@ export type {
   DataTableOpts,
   DataTableSortPayload,
 } from "./types";
+export {
+  useDataTable,
+  type UseDataTableDeps,
+  type UseDataTablePagination,
+} from "./useDataTable";

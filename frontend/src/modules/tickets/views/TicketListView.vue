@@ -33,7 +33,7 @@
             <StatusBadge :status="(row as ITicket).status" />
           </template>
           <template #cell-priority="{ row }">
-            {{ $t("tickets.priority." + (row as ITicket).priority) }}
+            <PriorityBadge :priority="(row as ITicket).priority" />
           </template>
         </DataTable>
 
@@ -53,25 +53,27 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
-import FilterBar from "@/modules/tickets/components/FilterBar.vue";
-import StatusBadge from "@/modules/tickets/components/StatusBadge.vue";
-import TicketCard from "@/modules/tickets/components/TicketCard.vue";
+import FilterBar from "@/modules/tickets/components/shared/FilterBar.vue";
+import PriorityBadge from "@/modules/tickets/components/shared/PriorityBadge.vue";
+import StatusBadge from "@/modules/tickets/components/shared/StatusBadge.vue";
+import TicketCard from "@/modules/tickets/components/shared/TicketCard.vue";
 import { useTicketsFilter } from "@/modules/tickets/composables/useTicketsFilter";
 import { useTicketsStore } from "@/modules/tickets/stores/ticketsStore";
+import { TICKET_TABLE_COLUMNS } from "@/modules/tickets/tablesSetup";
 import type { ITicket } from "@/modules/tickets/types";
 import {
   DataTable,
   SORT_ORDER,
-  type DataTableOpts,
+  useDataTable,
   type DataTableSortPayload,
 } from "@/shared/components/data-table";
 import { useIsMobile } from "@/composables/useIsMobile";
 
-const { t } = useI18n();
 const store = useTicketsStore();
+const { t } = useI18n();
 const {
   statusFilter,
   tickets,
@@ -86,34 +88,21 @@ const router = useRouter();
 const sortField = ref<string | null>(null);
 const sortOrder = ref<DataTableSortPayload["order"]>(SORT_ORDER.ASC);
 
-const tableOpts = computed<DataTableOpts<ITicket>>(() => ({
-  columns: [
-    { key: "id", header: "tickets.headers.id", sortable: true },
-    { key: "customerName", header: "tickets.headers.customerName", sortable: true },
-    {
-      key: "subject",
-      header: "tickets.headers.subject",
-      sortable: true,
-      cellClass: "max-w-[240px] truncate",
-    },
-    { key: "status", header: "tickets.headers.status" },
-    { key: "priority", header: "tickets.headers.priority" },
-  ],
-  data: tickets.value,
+const { tableOpts } = useDataTable<ITicket>({
+  columns: TICKET_TABLE_COLUMNS,
+  data: tickets,
   rowKey: "id",
   selectable: true,
-  sortField: sortField.value,
-  sortOrder: sortOrder.value,
+  sortField,
+  sortOrder,
   emptyText: "tickets.messages.emptyList",
-  ...(total.value > 0 && {
-    pagination: {
-      page: page.value,
-      pageSize,
-      total: total.value,
-      activeFilterLabel: t("tickets.filter." + statusFilter.value),
-    },
-  }),
-}));
+  pagination: {
+    page,
+    pageSize,
+    total,
+    getActiveFilterLabel: () => t("tickets.filter." + statusFilter.value),
+  },
+});
 
 const handleSort = (payload: DataTableSortPayload): void => {
   sortField.value = payload.field;

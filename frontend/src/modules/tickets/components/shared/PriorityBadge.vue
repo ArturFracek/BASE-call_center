@@ -25,7 +25,6 @@ const badgeClass = computed(() => `priority-badge priority-badge--${priority}`);
 .priority-badge
   border-color: transparent
   color: white
-
   &--low
     background-color: var(--priority-low)
   &--medium

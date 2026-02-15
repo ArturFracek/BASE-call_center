@@ -11,115 +11,35 @@
       name="ticket-detail-fade"
       mode="out-in"
     >
-      <div
+      <TicketDetailSkeleton
         v-if="loading"
         key="loading"
-      >
-        <p class="text-muted-foreground">
-          {{ $t("tickets.messages.loading") }}
-        </p>
-        <div
-          class="ticket-detail-view__skeleton mt-6 space-y-4"
-          aria-hidden="true"
-        >
-          <div class="h-8 w-56 rounded bg-muted animate-pulse" />
-          <div
-            v-for="i in 6"
-            :key="i"
-            class="ticket-detail-view__skeleton-field"
-          >
-            <div class="h-4 w-20 rounded bg-muted animate-pulse" />
-            <div
-              class="mt-1 rounded bg-muted animate-pulse"
-              :class="i === 4 ? 'h-20 w-full' : 'h-4 w-full max-w-md'"
-            />
-          </div>
-          <div class="ticket-detail-view__skeleton-field pt-2">
-            <div class="h-4 w-16 rounded bg-muted animate-pulse" />
-            <div class="mt-1 flex gap-2">
-              <div class="h-6 w-24 rounded bg-muted animate-pulse" />
-              <div class="h-9 w-[200px] rounded bg-muted animate-pulse" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div
+      />
+      <TicketDetailNotFound
         v-else-if="notFound"
         key="notFound"
-      >
-        <h1 class="text-xl font-semibold text-foreground">
-          {{ $t("tickets.headers.detail") }}
-        </h1>
-        <p class="text-muted-foreground mt-2">
-          {{ $t("tickets.messages.notFound") }}
-        </p>
-      </div>
-
+      />
       <div
         v-else-if="ticket"
         key="ticket"
       >
-      <h1 class="text-2xl font-semibold tracking-tight text-foreground">
-        {{ $t("tickets.headers.detail") }}
-      </h1>
-
-      <div class="ticket-detail-view__fields space-y-4 mt-6">
-        <DetailField
-          v-for="field in detailFields"
-          :key="field.labelKey"
-          :label="field.label"
-        >
-          <PriorityBadge
-            v-if="field.fieldKey === 'priority'"
-            :priority="ticket.priority"
+        <h1 class="text-2xl font-semibold tracking-tight text-foreground">
+          {{ $t("tickets.headers.detail") }}
+        </h1>
+        <div class="ticket-detail-view__body mt-6 space-y-4">
+          <TicketDetailFields
+            :fields="detailFields"
+            :ticket="ticket"
           />
-          <p
-            v-else
-            class="text-foreground"
-            :class="field.contentClass"
-          >
-            {{ field.value }}
-          </p>
-        </DetailField>
-
-        <section
-          class="ticket-detail-view__status-section"
-          :aria-label="$t('tickets.aria.editStatus')"
-        >
-          <DetailField :label="$t('tickets.headers.status')">
-            <div class="flex flex-wrap items-center gap-2">
-              <StatusBadge :status="ticket.status" />
-              <Select v-model="selectedStatus">
-                <SelectTrigger
-                  class="w-[200px]"
-                  :aria-label="$t('tickets.aria.statusSelect')"
-                >
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem
-                    v-for="status in statusOptions"
-                    :key="status"
-                    :value="status"
-                  >
-                    {{ $t("tickets.status." + status) }}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </DetailField>
-          <div class="ticket-detail-view__actions flex gap-3 mt-2">
-            <Button
-              :disabled="saving || selectedStatus === ticket.status"
-              @click="saveStatus"
-            >
-              {{ $t("tickets.buttons.save") }}
-            </Button>
-          </div>
-        </section>
+          <TicketDetailStatusSection
+            v-model="selectedStatus"
+            :ticket="ticket"
+            :saving="saving"
+            :status-options="statusOptions"
+            @save="saveStatus"
+          />
+        </div>
       </div>
-    </div>
     </Transition>
   </main>
 </template>
@@ -129,20 +49,15 @@ import { computed, ref, watch } from "vue";
 import { toRef } from "vue";
 import { useI18n } from "vue-i18n";
 import { RouterLink } from "vue-router";
-import { DetailField } from "@/shared/components/detail-field";
-import { Button } from "@/shared/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/shared/components/ui/select";
 import { displayToast } from "@/composables/useToast";
 import { formatDateTime } from "@/shared/helpers/formatDateTime";
 import { TICKET_STATUSES } from "@/modules/tickets/consts";
-import PriorityBadge from "@/modules/tickets/components/PriorityBadge.vue";
-import StatusBadge from "@/modules/tickets/components/StatusBadge.vue";
+import {
+  TicketDetailFields,
+  TicketDetailNotFound,
+  TicketDetailSkeleton,
+  TicketDetailStatusSection,
+} from "@/modules/tickets/components/sections/ticketDetailsSections";
 import { useTicketsStore } from "@/modules/tickets/stores/ticketsStore";
 import type { ITicket, TTicketStatus } from "@/modules/tickets/types";
 
@@ -254,23 +169,6 @@ const saveStatus = async (): Promise<void> => {
   &__back
     &:hover
       text-decoration: none
-
-  &__skeleton
-    max-width: 40rem
-
-  &__skeleton-field
-    min-height: 2rem
-
-  &__fields
-    label + p,
-    label + div
-      margin-top: 0.25rem
-
-  &__status-section
-    padding: 1rem
-    border: 1px solid var(--border)
-    border-radius: var(--radius)
-    background: var(--muted/30)
 
 .ticket-detail-fade-enter-active,
 .ticket-detail-fade-leave-active

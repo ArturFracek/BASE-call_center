@@ -140,18 +140,6 @@ const handleSort = (field: string): void => {
   box-shadow: var(--shadow-sm)
   overflow: hidden
 
-  &__table
-    :deep(th),
-    :deep(td)
-      padding: 0.75rem 1rem
-    :deep(th)
-      background: var(--muted)
-      color: var(--muted-foreground)
-      font-weight: 500
-      font-size: 0.8125rem
-      text-transform: uppercase
-      letter-spacing: 0.025em
-
   &__header-row
     border-bottom: 1px solid var(--border)
 
@@ -183,4 +171,18 @@ const handleSort = (field: string): void => {
     transition: background-color 0.15s ease
     &:last-child
       border-bottom: none
+</style>
+
+<style lang="sass">
+.data-table .data-table__table th,
+.data-table .data-table__table td
+  padding: 0.75rem 1rem
+
+.data-table .data-table__table th
+  background: var(--muted)
+  color: var(--muted-foreground)
+  font-weight: 500
+  font-size: 0.8125rem
+  text-transform: uppercase
+  letter-spacing: 0.025em
 </style>
