@@ -1,7 +1,3 @@
-/**
- * Wartości używane w skryptach i dokumentacji (README, DEPLOYMENT).
- * Backend i frontend mają własne pliki stałych z tymi samymi wartościami domyślnymi.
- */
 export const API_PORT_DEFAULT = 3000;
 export const FRONTEND_PORT_DEFAULT = 5173;
 export const DB_NAME_DEFAULT = "call_center";
