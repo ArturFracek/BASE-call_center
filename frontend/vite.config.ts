@@ -1,9 +1,9 @@
 import { fileURLToPath, URL } from 'node:url'
 
 import tailwindcss from '@tailwindcss/vite'
-import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
+import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   plugins: [
@@ -11,6 +11,12 @@ export default defineConfig({
     tailwindcss(),
     vueDevTools(),
   ],
+  test: {
+    environment: 'happy-dom',
+    setupFiles: ['./src/test/setup.ts'],
+    include: ['src/**/*.{spec,test}.{ts,vue}'],
+    globals: true,
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

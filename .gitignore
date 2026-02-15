@@ -1,5 +1,7 @@
 # Plan / task (local – nie commitujemy do repo)
-PLAN.md
+# Wszystkie .md oprócz README.md
+*.md
+!README.md
 task.txt
 
 # Dependencies

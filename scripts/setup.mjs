@@ -7,13 +7,15 @@ const rootDir = join(fileURLToPath(import.meta.url), "..");
 const backendDir = join(rootDir, "backend");
 const frontendDir = join(rootDir, "frontend");
 
+const shell = process.env.SHELL || (process.platform === "win32" ? "cmd.exe" : "/bin/zsh");
+
 function run(cmd, cwd = rootDir) {
-  execSync(cmd, { cwd, stdio: "inherit", shell: true });
+  execSync(cmd, { cwd, stdio: "inherit", shell });
 }
 
 function runOptional(cmd, cwd = rootDir) {
   try {
-    execSync(cmd, { cwd, stdio: "pipe", shell: true });
+    execSync(cmd, { cwd, stdio: "pipe", shell });
   } catch (_) {}
 }
 

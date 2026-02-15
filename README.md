@@ -13,7 +13,9 @@ npm install
 npm run start
 ```
 
-Co robi Skrypt: instalacja zależności (backend + frontend), **próba utworzenia bazy** (`createdb call_center` – na Windows często brak w PATH, wtedy utwórz bazę ręcznie przed startem), potem `db:generate`, `db:migrate`, `db:push`, `db:seed`, na końcu uruchomienie backendu i frontendu. Pliki `.env` są w repozytorium.
+Jeśli pojawi się błąd **ENOENT** lub **spawnSync** – uruchom `npm run start` w **zwykłym terminalu systemowym** (Terminal.app, iTerm, Windows Terminal), nie w zintegrowanym terminalu IDE; albo skorzystaj z kroków poniżej („Uwaga: jeśli…”).
+
+Skrypt: instalacja zależności (backend + frontend), **próba utworzenia bazy** (`createdb call_center` – na Windows często brak w PATH, wtedy utwórz bazę ręcznie przed startem), potem `db:generate`, `db:migrate`, `db:push`, `db:seed`, na końcu uruchomienie backendu i frontendu. Pliki `.env` są w repozytorium.
 
 Gdy baza nie powstanie: `createdb call_center`. W razie potrzeby dostosuj **DATABASE_URL** w **backend/.env** (np. `postgres://twoja_nazwa@localhost:5432/call_center`).
 
@@ -79,4 +81,17 @@ Vite uruchomi aplikację (zazwyczaj port 5173). Zostaw ten terminal otwarty.
 
 **6. Aplikacja w przeglądarce**  
 Wejdź na adres podany przez Vite w terminalu, zwykle **http://localhost:5173**. Powinna wyświetlić się lista zgłoszeń.
+
+---
+
+### Testy frontendu
+
+W katalogu **frontend**:
+
+```bash
+npm run test        # testy w trybie watch
+npm run test:run    # jednorazowe uruchomienie
+```
+
+Użyte: Vitest, @vue/test-utils, happy-dom, @pinia/testing. Szczegóły: [frontend/docs/TESTING.md](./frontend/docs/TESTING.md).
 
