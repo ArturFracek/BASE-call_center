@@ -1,11 +1,14 @@
 import { ref, computed, watch } from "vue";
+import { STATUS_FILTER_OPTIONS } from "@/modules/tickets/consts";
 import { useTicketsStore } from "@/modules/tickets/stores/ticketsStore";
 import type { ITicket, TStatusFilter } from "@/modules/tickets/types";
+
+const DEFAULT_FILTER = STATUS_FILTER_OPTIONS.ALL;
 
 export function useTicketsFilter() {
   const store = useTicketsStore();
 
-  const statusFilter = ref<TStatusFilter>("all");
+  const statusFilter = ref<TStatusFilter>(DEFAULT_FILTER);
 
   const setStatusFilter = (value: TStatusFilter): void => {
     statusFilter.value = value;
@@ -15,7 +18,7 @@ export function useTicketsFilter() {
     statusFilter,
     (newVal) => {
       store.fetchTickets(
-        newVal === "all" ? undefined : { status: newVal }
+        newVal === DEFAULT_FILTER ? undefined : { status: newVal }
       );
     },
     { immediate: false }
